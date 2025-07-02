@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import json
-from urllib.parse import quote
+from urllib.parse import unquote
 import pyarrow as pa
 import pyarrow.parquet as pq
 
@@ -42,19 +42,34 @@ def get_size(start_path = '.'):
             total += os.path.getsize(fp)
     return total
 
-def get_df(path):
-    file_list = os.listdir(path)
-    print(file_list)
-    dfs = [pd.read_parquet(os.path.join(path, file)) for file in file_list]
-    combined_df = pd.concat(dfs, ignore_index=True)
-    return combined_df
+def get_df(path, max_rows=1_000_000):
+    parts = []
+    total_rows = 0
+
+    for fname in sorted(os.listdir(path)):
+        df_part = pd.read_parquet(os.path.join(path, fname))
+        n = len(df_part)
+
+        if total_rows + n >= max_rows:
+            # Only take what we still need to reach the cap
+            df_part = df_part.iloc[: max_rows - total_rows]
+            parts.append(df_part)
+            break
+
+        parts.append(df_part)
+        total_rows += n
+
+        if total_rows >= max_rows:
+            break
+
+    return pd.concat(parts, ignore_index=True)
         
 
 os.makedirs("datasets_compress/wikimedia/wikipedia", exist_ok=True)
 
 dataset_id = "wikimedia/wikipedia"
 configs_file = "config.json"
-compression_method = "zstd" # "snappy", "gzip", "brotli", "lz4", "zstd"
+compression_methods = ["snappy", "gzip", "brotli", "lz4", "zstd"] # "snappy", "gzip", "brotli", "lz4", "zstd"
 config_dict = json.load(open(configs_file, "r"))
 prefixs = {
     '20231101.zh-classical': "https://zh-classical.wikipedia.org/wiki/", 
@@ -70,41 +85,46 @@ prefixs = {
     '20231101.nl': "https://nl.wikipedia.org/wiki/"
 }
 
-total_size = 0
-total_compress_size = 0
+total_size = {
+    "snappy": 0,
+    "gzip": 0,
+    "brotli": 0,
+    "lz4": 0,
+    "zstd": 0
+}
+total_compress_size = {
+    "snappy": 0,
+    "gzip": 0,
+    "brotli": 0,
+    "lz4": 0,
+    "zstd": 0
+}
 for config in config_dict[dataset_id]["configs"]:
     if "compress" not in config:
         config["compress"] = []
 
-    if len(config["compress"]) == 0:
-        config["compress"].append({"method": "url=offset+transfer(title)"})
-    compress_config = config["compress"][0]
+    if len(config["compress"]) == 3:
+        config["compress"].append({"function": "title=transfer(url-prefix)"})
+    compress_config = config["compress"][3]
     print(f"  Config: {config['file']}")
     config_name = config["file"]
     df = get_df(f"datasets/{dataset_id}/{config_name}/")
-    compress_df = df.drop(columns=["url"])
-    write_parquet(compress_df, f"datasets_compress/{dataset_id}/{config_name}.parquet", PARQUET_COMPRESSION_TYPE=compression_method)
-    compress_df = pd.read_parquet(f"datasets_compress/{dataset_id}/{config_name}.parquet")
-    size = config[f"size_{compression_method}"]
-    compression_size = get_size(f"datasets_compress/{dataset_id}/{config_name}.parquet")
-    print(f"Size of the dataset: {size / (1024):.2f} kB")
-    print(f"Size of the compression: {compression_size / (1024):.2f} kB")
-    print(f"Compression ratio: {((size-compression_size) / size) * 100:.2f} %")
-    compress_config[f"size_compression_{compression_method}"] = compression_size
-    total_size += size
-    total_compress_size += compression_size
-    compress_df["url"] = compress_df["title"].apply(lambda x: prefixs[config_name] + quote(x))
-    compare_dataframes(df, compress_df)
-    config["compress"][0] = compress_config
-    
-
-print(f"Total size of the dataset ({compression_method}): {total_size / (1024):.2f} kB")
-print(f"Total size of the compression ({compression_method}): {total_compress_size / (1024):.2f} kB")
-print(f"Total compression ratio ({compression_method}): {((total_size-total_compress_size) / total_size) * 100:.2f} %")
-
-with open(configs_file, "w") as f:
-    json.dump(config_dict, f, indent=2)
-
-
+    for compression_method in compression_methods:
+        compress_df = df.drop(columns=["title"])
+        write_parquet(compress_df, f"datasets_compress/{dataset_id}/{config_name}.parquet", PARQUET_COMPRESSION_TYPE=compression_method)
+        compress_df = pd.read_parquet(f"datasets_compress/{dataset_id}/{config_name}.parquet")
+        size = config[f"size_{compression_method}"]
+        compression_size = get_size(f"datasets_compress/{dataset_id}/{config_name}.parquet")
+        print(f"Size of the dataset: {size / (1024):.2f} kB")
+        print(f"Size of the compression: {compression_size / (1024):.2f} kB")
+        print(f"Compression ratio: {((size-compression_size) / size) * 100:.2f} %")
+        compress_config[f"size_compression_{compression_method}"] = compression_size
+        total_size[compression_method] += size
+        total_compress_size[compression_method] += compression_size
+        prefix =  prefixs[config_name]
+        compress_df["title"] = compress_df["url"].apply(lambda x: unquote(x.replace(prefix, "")))
+        compare_dataframes(df, compress_df)
+        with open(configs_file, "w") as f:
+            json.dump(config_dict, f, indent=2)
 
 
