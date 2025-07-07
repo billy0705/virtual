@@ -189,6 +189,21 @@ def main():
                 dataset_config["status"] = STATUS_PROCESSED
                 print(f"    -> Status changed to: {STATUS_PROCESSED}")
 
+            if dataset_config.get("status") == STATUS_PROCESSED:
+                # Save the original dataframe as a snappy-compressed Parquet file
+                print(f"    Saving original dataset to Snappy Parquet format...")
+                output_dir = f"datasets_parquet/{dataset_id}"
+                os.makedirs(output_dir, exist_ok=True)
+                
+                output_filename = dataset_config.get("file")
+                if not output_filename:
+                    output_filename = dataset_id.replace("/", "_").replace("-", "_")
+                
+                output_path = f"{output_dir}/{output_filename}.parquet"
+                df = get_df(dataset_config.get("path"))
+                write_parquet(df, output_path, PARQUET_COMPRESSION_TYPE="snappy")
+                print(f"      -> Saved to {output_path}")
+
         # Clean up cache for the specific dataset repo to save space
         repo_cache_path = f"./datasets/{dataset_id}/.cache"
         if os.path.isdir(repo_cache_path):
