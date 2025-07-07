@@ -44,6 +44,16 @@ def download_dataset(dataset_id, config):
     elif dataset_id == "bigdata-pw/Flickr":
         files = list_repo_files(dataset_id, repo_type="dataset")
         pattern = files[2:22]
+    elif dataset_id == "vCache/SemBenchmarkLmArena":
+        revision = "refs/convert/parquet"
+        pattern = [f"{config}/*"]
+    elif dataset_id == "vCache/SemBenchmarkClassification":
+        revision = "refs/convert/parquet"
+        pattern = [f"{config}/*"]
+    elif dataset_id == "nhagar/fineweb_urls":
+        files = list_repo_files(dataset_id, repo_type="dataset")
+        pattern = files[2:12]
+        # pattern = [f"{config}/*"]
     else:
         print(f"Unknown dataset_id: {dataset_id}")
         return
