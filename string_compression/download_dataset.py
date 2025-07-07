@@ -200,6 +200,9 @@ def main():
                     output_filename = dataset_id.replace("/", "_").replace("-", "_")
                 
                 output_path = f"{output_dir}/{output_filename}.parquet"
+                # if the output path already exists, skip writing
+                if os.path.exists(output_path):
+                    print(f"      -> Output file already exists: {output_path}. Skipping write.")
                 df = get_df(dataset_config.get("path"))
                 write_parquet(df, output_path, PARQUET_COMPRESSION_TYPE="snappy")
                 print(f"      -> Saved to {output_path}")
