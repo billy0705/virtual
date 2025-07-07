@@ -203,11 +203,8 @@ def main():
                 # if the output path already exists, skip writing
                 if os.path.exists(output_path):
                     print(f"      -> Output file already exists: {output_path}. Skipping write.")
-<<<<<<< HEAD
-=======
                     continue
                 
->>>>>>> 21-correlation-aware-string-compression
                 df = get_df(dataset_config.get("path"))
                 write_parquet(df, output_path, PARQUET_COMPRESSION_TYPE="snappy")
                 print(f"      -> Saved to {output_path}")
