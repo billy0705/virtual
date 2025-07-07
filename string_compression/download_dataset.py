@@ -28,9 +28,9 @@ from datetime import datetime
 from typing import Dict, Any
 
 import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
 from huggingface_hub import snapshot_download, list_repo_files
+
+from utils import write_parquet, get_df, get_size
 
 # --- Constants ---
 CONFIG_FILE = "config.json"
@@ -39,67 +39,6 @@ COMPRESSION_METHODS = ["snappy", "gzip", "brotli", "lz4", "zstd"]
 STATUS_PENDING = "not yet started"
 STATUS_DOWNLOADED = "downloaded"
 STATUS_PROCESSED = "processed"
-
-
-def write_parquet(df: pd.DataFrame, path: str, compression: str = "snappy"):
-    """
-    Writes a Pandas DataFrame to a Parquet file with specified compression.
-
-    Args:
-        df: The DataFrame to write.
-        path: The output file path.
-        compression: The compression codec to use (e.g., "snappy", "gzip").
-    """
-    table = pa.Table.from_pandas(df)
-    pq.write_table(table, path, compression=compression)
-
-
-def get_df_from_parquet_directory(path: str, max_rows: int = 1_000_000) -> pd.DataFrame:
-    """
-    Reads multiple Parquet files from a directory into a single DataFrame.
-
-    Stops reading once max_rows is reached.
-
-    Args:
-        path: The directory containing the Parquet files.
-        max_rows: The maximum number of rows to load.
-
-    Returns:
-        A concatenated Pandas DataFrame.
-    """
-    parts = []
-    total_rows = 0
-
-    if not os.path.isdir(path):
-        print(f"Error: Path is not a directory: {path}")
-        return pd.DataFrame()
-
-    for fname in sorted(os.listdir(path)):
-        if not fname.endswith(('.parquet', '.parq')):
-            continue
-
-        file_path = os.path.join(path, fname)
-        try:
-            df_part = pd.read_parquet(file_path)
-            n = len(df_part)
-
-            if total_rows + n >= max_rows:
-                # Only take what we still need to reach the cap
-                rows_to_take = max_rows - total_rows
-                df_part = df_part.iloc[:rows_to_take]
-                parts.append(df_part)
-                break
-
-            parts.append(df_part)
-            total_rows += n
-        except Exception as e:
-            print(f"Warning: Could not read {file_path}. Error: {e}")
-            continue
-
-    if not parts:
-        return pd.DataFrame()
-
-    return pd.concat(parts, ignore_index=True)
 
 
 def download_dataset(dataset_id: str, config_file: str):
@@ -182,29 +121,6 @@ def download_dataset(dataset_id: str, config_file: str):
     snapshot_download(**download_args)
 
 
-def get_total_size(path: str) -> int:
-    """
-    Calculates the total size of a file or a directory and its contents.
-
-    Args:
-        path: The path to the file or directory.
-
-    Returns:
-        The total size in bytes.
-    """
-    if os.path.isfile(path):
-        return os.path.getsize(path)
-
-    total_size = 0
-    for dirpath, _, filenames in os.walk(path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
-            # Ensure the path is a file and not a broken symlink
-            if os.path.isfile(fp):
-                total_size += os.path.getsize(fp)
-    return total_size
-
-
 def main():
     """
     Main execution function.
@@ -249,12 +165,12 @@ def main():
 
                 print("    Calculating file sizes...")
                 # Calculate original size
-                original_size = get_total_size(dataset_path)
+                original_size = get_size(dataset_path)
                 dataset_config["size_original"] = original_size
                 print(f"      Original size: {original_size} bytes")
 
                 # Read dataframe to get row count and calculate compressed sizes
-                df = get_df_from_parquet_directory(dataset_path)
+                df = get_df(dataset_path)
                 if df.empty:
                     print(f"    Warning: No data loaded from {dataset_path}. Skipping compression tests.")
                     dataset_config["status"] = "processing_failed"
@@ -265,8 +181,8 @@ def main():
                 # Calculate size for each compression method
                 for method in COMPRESSION_METHODS:
                     size_key = f"size_{method}"
-                    write_parquet(df, TEMP_PARQUET_FILE, compression=method)
-                    compressed_size = get_total_size(TEMP_PARQUET_FILE)
+                    write_parquet(df, TEMP_PARQUET_FILE, PARQUET_COMPRESSION_TYPE=method)
+                    compressed_size = get_size(TEMP_PARQUET_FILE)
                     dataset_config[size_key] = compressed_size
                     print(f"      Size with '{method}' compression: {compressed_size} bytes")
 
