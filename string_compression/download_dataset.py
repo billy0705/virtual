@@ -189,11 +189,11 @@ def main():
                 dataset_config["status"] = STATUS_PROCESSED
                 print(f"    -> Status changed to: {STATUS_PROCESSED}")
 
-            # Clean up cache for the specific dataset repo to save space
-            repo_cache_path = f"./datasets/{dataset_id}/.cache"
-            if os.path.isdir(repo_cache_path):
-                print(f"  Cleaning up cache for {dataset_id}...")
-                shutil.rmtree(repo_cache_path)
+        # Clean up cache for the specific dataset repo to save space
+        repo_cache_path = f"./datasets/{dataset_id}/.cache"
+        if os.path.isdir(repo_cache_path):
+            print(f"  Cleaning up cache for {dataset_id}...")
+            shutil.rmtree(repo_cache_path)
 
     # --- Final Cleanup ---
     # Remove the global cache directory
