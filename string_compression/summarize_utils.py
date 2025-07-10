@@ -299,9 +299,9 @@ class SummarizePlotter:
             rf'$\texttt{{SUMMARIZE\ LENGTH(*)}}$'
         ]
         bar_width = 0.25
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 5), gridspec_kw={'width_ratios': [1, 2, 2]})
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 5))
         # Set the x-ticks for the second and third plots
-        x_query = np.arange(1, 3)  # index 1 and 2
+        x_query = np.arange(2)
         if len(times) == 5:
             x_1 = [x_query[0] - bar_width/2, x_query[-1] - bar_width]
             x_2 = [x_query[0] + bar_width/2, x_query[-1]]
@@ -325,7 +325,7 @@ class SummarizePlotter:
         ax2.bar(x_1, original_list[1:3], bar_width, color='blue', label=r'$\texttt{parquet}$')
         ax2.bar(x_2, compressed_list[1:3], bar_width, color='orange', label=r'$\texttt{virtual}$')
         if trick_list and trick_list[2] is not None:
-            ax2.bar(x_3[2] + bar_width * 1.5, trick_list[2], bar_width, color='yellow', label=r'fast $\texttt{virtual}$')
+            ax2.bar(x_3[2], trick_list[2], bar_width, color='yellow', label=r'fast $\texttt{virtual}$')
 
         ax2.set_xticks(x_query)
         ax2.set_xticklabels(x_labels[1:3])
