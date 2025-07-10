@@ -68,6 +68,8 @@ class SummarizePlotter:
 
         # Initialize the DuckDB views for the datasets
         self.register_views()
+        columns = self.con.execute("PRAGMA table_info('original')").fetchdf()
+        self.columns_name = columns['name'].tolist()
 
     def register_views(self):
         """
@@ -115,6 +117,27 @@ class SummarizePlotter:
 
         print(f"Added target column: {target_column}")
     
+    def query_rewrite(self, query: str, target_column: list[str], length_sql=False, length_trick=False) -> str:
+        """
+        Rewrites the SQL query to summarize the target column.
+
+        Args:
+            target_column: The column to summarize in the queries.
+
+        Returns:
+            The rewritten SQL query string.
+        """
+        for col in target_column:
+            target_sql = self.dict_of_target_columns[col]
+            if length_sql:
+                if length_trick:
+                    query = query.replace(f' LENGTH({col})', f' {target_sql.virtual_length_trick}')
+                else:
+                    query = query.replace(f' LENGTH({col})', f' {target_sql.virtual_sql_length}')
+            else:
+                query = query.replace(f' {col}', f' {target_sql.virtual_sql}')
+        return query
+
     def plot_target_column(self, target_column: str):
         """
         Generates and displays a plot comparing file sizes and query times for the specified target column.
@@ -130,15 +153,50 @@ class SummarizePlotter:
         
         target_sql = self.dict_of_target_columns[target_column]
 
+        
+        # print(columns['name'].tolist())
+
         # Define SQL queries for summarization operations
-        summarize_col_sql = f"SUMMARIZE SELECT {target_sql.target_column_sql} FROM original"
-        summarize_col_sql_virtual = f"SUMMARIZE SELECT {target_sql.virtual_sql} FROM virtual"
+        summarize_col_sql = f"SUMMARIZE SELECT {target_column} FROM original"
+        summarize_col_sql_virtual = self.query_rewrite(
+            f"SUMMARIZE SELECT {target_column} FROM virtual",
+            [target_column]
+        )
 
         # Define SQL queries for summarization length operations
-        summarize_len_sql = f"SUMMARIZE SELECT {target_sql.target_column_sql_length} FROM original"
-        summarize_len_sql_virtual = f"SUMMARIZE SELECT {target_sql.virtual_sql_length} FROM virtual"
+        summarize_len_sql = f"SUMMARIZE SELECT LENGTH({target_column}) FROM original"
+        summarize_len_sql_virtual = self.query_rewrite(
+            f"SUMMARIZE SELECT LENGTH({target_column}) FROM virtual",
+            [target_column],
+            length_sql=True
+        )
         if target_sql.virtual_length_trick is not None:
-            summarize_len_sql_virtual_trick = f"SUMMARIZE SELECT {target_sql.virtual_length_trick} FROM virtual"
+            summarize_len_sql_virtual_trick = self.query_rewrite(
+                f"SUMMARIZE SELECT LENGTH({target_column}) FROM virtual",
+                [target_column],
+                length_sql=True,
+                length_trick=True
+            )
+
+        sql_all = f"SUMMARIZE SELECT {', '.join(self.columns_name)} FROM original"
+        sql_all_virtual = self.query_rewrite(
+            f"SUMMARIZE SELECT {', '.join(self.columns_name)} FROM virtual",
+            self.list_of_targets_columns
+        )
+        length_expressions = [f'LENGTH({col})' for col in self.columns_name]
+        sql_all_length = f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM original"
+        sql_all_length_virtual = self.query_rewrite(
+            f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM virtual",
+            self.list_of_targets_columns,
+            length_sql=True
+        )
+        if target_sql.virtual_length_trick is not None:
+            sql_all_length_trick = self.query_rewrite(
+                f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM virtual",
+                self.list_of_targets_columns,
+                length_sql=True,
+                length_trick=True
+            )
 
         # Measure query times
         t1 = self.time_query(summarize_col_sql)
@@ -148,6 +206,14 @@ class SummarizePlotter:
         if target_sql.virtual_length_trick is not None:
             t5 = self.time_query(summarize_len_sql_virtual_trick)
 
+        print(sql_all_virtual)
+
+        t6 = self.time_query(sql_all)
+        t7 = self.time_query(sql_all_virtual)
+        t8 = self.time_query(sql_all_length)
+        t9 = self.time_query(sql_all_length_virtual)
+        if target_sql.virtual_length_trick is not None:
+            t10 = self.time_query(sql_all_length_trick)
         
         # Print query times if print_flag is set
         if self.print_flag:
@@ -159,17 +225,22 @@ class SummarizePlotter:
                 print(f"Trick query time: {t5:.4f} seconds")
         
         # Prepare query times for plotting
-        query_times = [t1, t2, t3, t4]
+        query_col_times = [t1, t2, t3, t4]
         if target_sql.virtual_length_trick is not None:
-            query_times.append(t5)
+            query_col_times.append(t5)
+
+        query_all_times = [t6, t7, t8, t9]
+        if target_sql.virtual_length_trick is not None:
+            query_all_times.append(t10)
             
         # Plot the results
         self.plot_results(
-            query_times,
+            query_col_times,
+            query_all_times,
             target_column=target_column
         )
     
-    def plot_results(self, query_times: list, target_column: str = "Target Column"):
+    def plot_results(self, query_col_times: list, query_all_times: list, target_column: str = "Target Column"):
         """
         Generates and displays a plot comparing file sizes and query times.
 
@@ -179,45 +250,82 @@ class SummarizePlotter:
             query_times: A dictionary containing query labels and their corresponding times.
             dataset_name: Name of the dataset for plot titles.
         """
-        plt.figure(figsize=(12, 5))
 
-        # Left: File sizes
         original_ratio = (self.original_size / self.original_size) * 100
         compressed_ratio = (self.compressed_size / self.original_size) * 100
-        # labels = list(query_times.keys())
-        times = query_times
+        times = query_col_times
+        all_times = query_all_times
 
-        original_list = [original_ratio, (times[0] / times[0]) * 100, (times[2] / times[2]) * 100]
-        compressed_list = [compressed_ratio, (times[1] / times[0]) * 100, (times[3] / times[2]) * 100]
+        # Prepare data
+        original_list = [original_ratio, (times[0] / times[0]) * 100, (times[2] / times[2]) * 100,
+                         (all_times[0] / all_times[0]) * 100, (all_times[2] / all_times[2]) * 100]
+        compressed_list = [compressed_ratio, (times[1] / times[0]) * 100, (times[3] / times[2]) * 100,
+                           (all_times[1] / all_times[0]) * 100, (all_times[3] / all_times[2]) * 100]
         if len(times) == 5:
-            trick_list = [0, 0, (times[4] / times[2]) * 100]
-        x_labels = ['Size', f'SUMMARIZE {target_column}', f'SUMMARIZE LENGTH({target_column})']
+            trick_list = [0, 0, (times[4] / times[2]) * 100, 0, (all_times[4] / all_times[2]) * 100]
 
+        y_max = max(120, max(compressed_list[1:]) * 1.1)
+
+        x_labels = [
+            r'$\texttt{File Size}$',
+            rf'$\texttt{{SUMMARIZE\ {target_column}}}$',
+            rf'$\texttt{{SUMMARIZE\ LENGTH({target_column})}}$',
+            rf'$\texttt{{SUMMARIZE\ *}}$',
+            rf'$\texttt{{SUMMARIZE\ LENGTH(*)}}$'
+        ]
         bar_width = 0.25
-        x = np.arange(len(x_labels))
 
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 5))
+
+        # Plot 1: File size
+        ax1.bar(0 - bar_width/2, original_ratio, bar_width, color='blue', label=r'$\texttt{parquet}$')
+        ax1.bar(0 + bar_width/2, compressed_ratio, bar_width, color='orange', label=r'$\texttt{virtual}$')
+        ax1.set_xticks([0])
+        ax1.set_xticklabels([x_labels[0]])
+        ax1.set_ylabel(r'File Size [\%]')
+        ax1.grid(True)
+        ax1.legend(loc='upper left')
+
+        # Plot 2: Query latency
+        x_query = np.arange(1, 3)  # index 1 and 2
         if len(times) == 5:
-            x_1 = [x[i] - bar_width/2 for i in range(2)]
-            x_2 = [x[i] + bar_width/2 for i in range(2)]
-            x_1.append(x[-1] - bar_width)
-            x_2.append(x[-1])
-            x_3 = [0, 0, x[-1] + bar_width]
+            x_1 = [x_query[0] - bar_width/2, x_query[-1] - bar_width]
+            x_2 = [x_query[0] + bar_width/2, x_query[-1]]
+            x_3 = [0, 0, x_query[-1] + bar_width]
         else:
-            x_1 = x - bar_width/2
-            x_2 = x + bar_width/2
+            x_1 = x_query - bar_width/2
+            x_2 = x_query + bar_width/2
 
-        plt.bar(x_1, original_list, bar_width, color=['blue'], label='Original')
-        plt.bar(x_2, compressed_list, bar_width, color=['orange'], label='Compressed')
+        ax2.bar(x_1, original_list[1:3], bar_width, color='blue', label=r'$\texttt{parquet}$')
+        ax2.bar(x_2, compressed_list[1:3], bar_width, color='orange', label=r'$\texttt{virtual}$')
         if len(times) == 5:
-            plt.bar(x_3, trick_list, bar_width, color=['yellow'], label='Compressed Len Trick')
+            ax2.bar(x_3[2], trick_list[2], bar_width, color='yellow', label=r'fast $\texttt{virtual}$')
 
-        plt.ylabel('Percentage(\%)')
-        plt.xticks(x, x_labels)
-        # log scale y
-        # plt.yscale('log')
-        plt.title(f'Parquet Compression {self.dataset_name} - ({target_column})')
-        plt.grid(True)
-        plt.legend()
+        ax2.set_xticks(x_query)
+        ax2.set_xticklabels(x_labels[1:3])
+        ax2.set_ylabel(r'Query Latency [\%]')
+        ax2.set_ylim(0, y_max)
+        ax2.grid(True)
+        ax2.legend(loc='upper left')
+
+        print(trick_list)
+
+        # Plot 3: Query latency for all columns
+        x_all = np.arange(1, 3)  # index 0 and 1
+        ax3.bar(x_1, original_list[3:], bar_width, color='blue', label=r'$\texttt{parquet}$')
+        ax3.bar(x_2, compressed_list[3:], bar_width, color='orange', label=r'$\texttt{virtual}$')
+        if len(all_times) == 5:
+            print(trick_list)
+            ax3.bar(x_3[2], trick_list[4], bar_width, color='yellow', label=r'fast $\texttt{virtual}$')
+        ax3.set_xticks(x_all)
+        ax3.set_xticklabels(x_labels[3:])
+        ax3.set_ylabel(r'Query Latency [\%]')
+        ax3.set_ylim(0, y_max)
+        ax3.grid(True)
+        ax3.legend(loc='upper left')
+
+        fig.suptitle(rf'{self.dataset_name.lower()} - column $\texttt{{{target_column}}}$')
 
         plt.tight_layout()
         plt.show()
+
