@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import matplotlib.patches as mpatches
 import matplotlib.transforms as mtransforms
+import matplotlib.gridspec as gridspec
 import matplotlib
 import os
 # import pandas as pd
@@ -176,45 +177,45 @@ class SummarizePlotter:
         target_sql = self.dict_of_target_columns[target_column]
 
         # --- Define SQL queries for summarization on the target column ---
-        summarize_col_sql = f"SUMMARIZE SELECT {target_column} FROM original"
+        summarize_col_sql = f"SUMMARIZE SELECT {target_column} FROM parquet_scan('{self.original_path}')"
         summarize_col_sql_virtual = self.query_rewrite(
-            f"SUMMARIZE SELECT {target_column} FROM virtual",
+            f"SUMMARIZE SELECT {target_column} FROM parquet_scan('{self.compressed_path}')",
             [target_column]
         )
 
         # --- Define SQL queries for summarization on the LENGTH of the target column ---
-        summarize_len_sql = f"SUMMARIZE SELECT LENGTH({target_column}) FROM original"
+        summarize_len_sql = f"SUMMARIZE SELECT LENGTH({target_column}) FROM parquet_scan('{self.original_path}')"
         summarize_len_sql_virtual = self.query_rewrite(
-            f"SUMMARIZE SELECT LENGTH({target_column}) FROM virtual",
+            f"SUMMARIZE SELECT LENGTH({target_column}) FROM parquet_scan('{self.compressed_path}')",
             [target_column],
             length_sql=True
         )
         summarize_len_sql_virtual_trick = None
         if target_sql.virtual_length_trick is not None:
             summarize_len_sql_virtual_trick = self.query_rewrite(
-                f"SUMMARIZE SELECT LENGTH({target_column}) FROM virtual",
+                f"SUMMARIZE SELECT LENGTH({target_column}) FROM parquet_scan('{self.compressed_path}')",
                 [target_column],
                 length_sql=True,
                 length_trick=True
             )
 
         # --- Define SQL queries for summarization on all columns ---
-        sql_all = f"SUMMARIZE SELECT {', '.join(self.columns_name)} FROM original"
+        sql_all = f"SUMMARIZE SELECT {', '.join(self.columns_name)} FROM parquet_scan('{self.original_path}')"
         sql_all_virtual = self.query_rewrite(
-            f"SUMMARIZE SELECT {', '.join(self.columns_name)} FROM virtual",
+            f"SUMMARIZE SELECT {', '.join(self.columns_name)} FROM parquet_scan('{self.compressed_path}')",
             self.list_of_targets_columns
         )
         length_expressions = [f'LENGTH({col})' for col in self.columns_name]
-        sql_all_length = f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM original"
+        sql_all_length = f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM parquet_scan('{self.original_path}')"
         sql_all_length_virtual = self.query_rewrite(
-            f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM virtual",
+            f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM parquet_scan('{self.compressed_path}')",
             self.list_of_targets_columns,
             length_sql=True
         )
         sql_all_length_trick = None
         if any(self.dict_of_target_columns[col].virtual_length_trick for col in self.list_of_targets_columns if col in self.dict_of_target_columns):
             sql_all_length_trick = self.query_rewrite(
-                f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM virtual",
+                f"SUMMARIZE SELECT {', '.join(length_expressions)} FROM parquet_scan('{self.compressed_path}')",
                 self.list_of_targets_columns,
                 length_sql=True,
                 length_trick=True
@@ -264,6 +265,7 @@ class SummarizePlotter:
         compressed_ratio = (self.compressed_size / self.original_size) * 100
         times = query_col_times
         all_times = query_all_times
+        monthly_costs = [34.73, 34.73 * (self.compressed_size / self.original_size)]  # Example monthly costs in USD
 
         # --- Prepare data for plotting ---
         # Lists contain percentage values relative to the original
@@ -299,7 +301,16 @@ class SummarizePlotter:
             rf'$\texttt{{SUMMARIZE\ LENGTH(*)}}$'
         ]
         bar_width = 0.25
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 5))
+        plt.rcParams.update({'font.size': 10})
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 5), gridspec_kw={'wspace': 0.3})
+        # fig = plt.figure(figsize=(12, 5))
+
+        # GridSpec with 4 columns: ax1 | spacer | ax2 | ax3
+        # gs = gridspec.GridSpec(1, 4, width_ratios=[1, 0, 1, 1], wspace=0.25)
+
+        # ax1 = fig.add_subplot(gs[0])
+        # ax2 = fig.add_subplot(gs[2])
+        # ax3 = fig.add_subplot(gs[3])
         # Set the x-ticks for the second and third plots
         x_query = np.arange(2)
         if len(times) == 5:
@@ -311,43 +322,53 @@ class SummarizePlotter:
             x_2 = x_query + bar_width/2
 
         # --- Plot 1: File size comparison ---
-        ax1.bar(0 - bar_width/2, original_list[0], bar_width, color='blue', label=r'$\texttt{parquet}$')
-        ax1.bar(0 + bar_width/2, compressed_list[0], bar_width, color='orange', label=r'$\texttt{virtual}$')
-        ax1.set_xticks([0])
-        ax1.set_xticklabels([x_labels[0]])
+        ax1.bar(0 - bar_width/2, original_list[0], bar_width, color='grey', label=r'$\texttt{parquet}$')
+        ax1.bar(0 + bar_width/2, compressed_list[0], bar_width, color='#007FFF', label=r'$\texttt{virtual}$')
+
+        # Annotate cost values on top of each bar
+        ax1.text(0 - bar_width/2, original_list[0] / 2, rf"\${monthly_costs[0]:.2f}/month", ha='center', va='bottom', fontsize=12)
+        ax1.text(0 + bar_width/2, compressed_list[0] / 2, rf"\${monthly_costs[1]:.2f}/month", ha='center', va='bottom', fontsize=12)
+        # ax1.set_xticks([0])
+        ax1.set_xticks([])  
+        # ax1.set_xticklabels([x_labels[0]])
         ax1.set_ylabel(r'File Size [\%]')
         ax1.grid(True)
+        ax1.set_axisbelow(True)
         ax1.legend(loc='upper right')
 
         # --- Plot 2: Query latency for target column ---
         x_query = np.arange(2)  # Two groups of bars
         
-        ax2.bar(x_1, original_list[1:3], bar_width, color='blue', label=r'$\texttt{parquet}$')
-        ax2.bar(x_2, compressed_list[1:3], bar_width, color='orange', label=r'$\texttt{virtual}$')
+        ax2.bar(x_1, original_list[1:3], bar_width, color='grey', label=r'$\texttt{parquet}$')
+        ax2.bar(x_2, compressed_list[1:3], bar_width, color='#007FFF', label=r'$\texttt{virtual}$')
         if trick_list and trick_list[2] is not None:
-            ax2.bar(x_3[2], trick_list[2], bar_width, color='yellow', label=r'fast $\texttt{virtual}$')
+            ax2.bar(x_3[2], trick_list[2], bar_width, color='orange', label=r'\textit{fast} $\texttt{virtual}$')
 
         ax2.set_xticks(x_query)
-        ax2.set_xticklabels(x_labels[1:3])
+        ax2.set_xticklabels(x_labels[1:3], fontsize=9)
         ax2.set_ylabel(r'Query Latency [\%]')
         ax2.set_ylim(0, y_max)
+        # ax2.tick_params(direction='in', length=2, width=1)
         ax2.grid(True)
+        ax2.set_axisbelow(True)
         ax2.legend(loc='upper right')
 
         # --- Plot 3: Query latency for all columns ---
-        ax3.bar(x_1, original_list[3:], bar_width, color='blue', label=r'$\texttt{parquet}$')
-        ax3.bar(x_2, compressed_list[3:], bar_width, color='orange', label=r'$\texttt{virtual}$')
+        ax3.bar(x_1, original_list[3:], bar_width, color='grey', label=r'$\texttt{parquet}$')
+        ax3.bar(x_2, compressed_list[3:], bar_width, color='#007FFF', label=r'$\texttt{virtual}$')
         if trick_list and trick_list[4] is not None:
-            ax3.bar(x_3[2], trick_list[4], bar_width, color='yellow', label=r'fast $\texttt{virtual}$')
+            ax3.bar(x_3[2], trick_list[4], bar_width, color='orange', label=r'\textit{fast} $\texttt{virtual}$')
         
         ax3.set_xticks(x_query)
         ax3.set_xticklabels(x_labels[3:])
         ax3.set_ylabel(r'Query Latency [\%]')
         ax3.set_ylim(0, y_max)
+        # ax3.tick_params(direction='in', length=2, width=1)
         ax3.grid(True)
+        ax3.set_axisbelow(True)
         ax3.legend(loc='upper right')
 
         # --- Final plot adjustments ---
-        fig.suptitle(rf'Dataset $\texttt{{{self.dataset_name.lower()}}}$')
-        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        fig.suptitle(rf'{{\Large Dataset}}: $\texttt{{{self.dataset_name.lower()}}}$', fontsize=14)
+        # plt.tight_layout(rect=[0, 0, 1, 0.96])
         plt.show()
