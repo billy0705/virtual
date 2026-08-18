@@ -1,0 +1,13 @@
+dataset_id,config_name,dataset_label,rows,codec,strategy,strategy_label,candidate_id,status,fallback_to_original,original_bytes,compressed_bytes,size_ratio,savings_bytes,savings_ratio,reason
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,original,Original,identity,original,False,10003818,10003818,1.0,0,0.0,
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,completed,True,10003818,10003818,1.0,0,0.0,"no candidate passed lossless, size-positive full validation"
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,manual,Historical hand-written,manual_fineweb_5,valid,False,10003818,9995066,0.9991251340238297,8752,0.0008748659761702982,
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,single,Agent single,identity,skipped,True,10003818,10003818,1.0,0,0.0,offline mode
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,two_stage,Agent two-stage,identity,skipped,True,10003818,10003818,1.0,0,0.0,offline mode
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,tool_loop,Agent tool-loop,identity,skipped,True,10003818,10003818,1.0,0,0.0,offline mode
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,original,Original,identity,original,False,302568,302568,1.0,0,0.0,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,heuristic,Algorithmic auto-prefix/suffix,heuristic_1_domain_from_0_url,valid,False,302568,264940,0.8756378731392612,37628,0.12436212686073875,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,manual,Historical hand-written,manual_fineweb_url_3,valid,False,302568,260065,0.8595257925491129,42503,0.14047420745088707,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,single,Agent single,identity,skipped,True,302568,302568,1.0,0,0.0,offline mode
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,two_stage,Agent two-stage,identity,skipped,True,302568,302568,1.0,0,0.0,offline mode
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,tool_loop,Agent tool-loop,identity,skipped,True,302568,302568,1.0,0,0.0,offline mode

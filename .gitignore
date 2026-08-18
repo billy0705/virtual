@@ -2,7 +2,7 @@
 sample.csv
 *.parquet
 .vscode/
-results/
+results/artifacts
 .DS_Store
 *.btrblocks
 
