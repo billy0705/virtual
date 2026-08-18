@@ -1,0 +1,27 @@
+api_calls,auxiliary_columns,brotli_base_bytes,brotli_compressed_bytes,brotli_savings_bytes,brotli_savings_ratio,candidate_id,config_name,dataset_id,group,gzip_base_bytes,gzip_compressed_bytes,gzip_savings_bytes,gzip_savings_ratio,input_tokens,lz4_base_bytes,lz4_compressed_bytes,lz4_savings_bytes,lz4_savings_ratio,output_tokens,reason,reconstruction_latency_ms,rows,selected,snappy_base_bytes,snappy_compressed_bytes,snappy_savings_bytes,snappy_savings_ratio,status,strategy,tool_calls,total_tokens,valid,zstd_base_bytes,zstd_compressed_bytes,zstd_savings_bytes,zstd_savings_ratio
+,,5923076,5923076,0,0.0,original,20231101.zh-classical,wikimedia/wikipedia,original,6670779,6670779,0,0.0,,10311949,10311949,0,0.0,,,,12708,False,9957397,9957397,0,0.0,valid,original,,,True,8059460,8059460,0,0.0
+0,0,,,,,manual_wiki_1,20231101.zh-classical,wikimedia/wikipedia,manual,,,,,0,,,,,0,reconstruction differs in 6 cell(s),,12708,False,,,,,invalid,manual,0,0,False,,,,
+0,2,5923076,5861075,62001,0.010467702930031625,manual_wiki_2,20231101.zh-classical,wikimedia/wikipedia,manual,6670779,6606279,64500,0.009669035655355993,0,10311949,10219993,91956,0.008917421915100627,0,,38.8032251,12708,False,9957397,9867483,89914,0.009029869954969155,valid,manual,0,0,True,8059460,7992666,66794,0.008287652026314419
+0,2,,,,,manual_wiki_3,20231101.zh-classical,wikimedia/wikipedia,manual,,,,,0,,,,,0,reconstruction differs in 6 cell(s),,12708,False,,,,,invalid,manual,0,0,False,,,,
+0,0,5923076,5820958,102118,0.017240703985564258,manual_wiki_4,20231101.zh-classical,wikimedia/wikipedia,manual,6670779,6561228,109551,0.01642251976868069,0,10311949,10154584,157365,0.0152604517341969,0,,36.8044624,12708,True,9957397,9803107,154290,0.015495013405611928,valid,manual,0,0,True,8059460,7939467,119993,0.014888466472939874
+0,,,,,,,20231101.zh-classical,wikimedia/wikipedia,heuristic,,,,,0,,,,,0,no candidates were produced,,12708,False,,,,,skipped,heuristic,0,0,False,,,,
+0,,,,,,,20231101.zh-classical,wikimedia/wikipedia,agent,,,,,0,,,,,0,offline mode,,12708,False,,,,,skipped,single,0,0,False,,,,
+0,,,,,,,20231101.zh-classical,wikimedia/wikipedia,agent,,,,,0,,,,,0,offline mode,,12708,False,,,,,skipped,two_stage,0,0,False,,,,
+0,,,,,,,20231101.zh-classical,wikimedia/wikipedia,agent,,,,,0,,,,,0,offline mode,,12708,False,,,,,skipped,tool_loop,0,0,False,,,,
+,,598249,598249,0,0.0,original,20231101.ab,wikimedia/wikipedia,original,717731,717731,0,0.0,,1193443,1193443,0,0.0,,,,6152,False,1243983,1243983,0,0.0,valid,original,,,True,794286,794286,0,0.0
+0,0,,,,,manual_wiki_1,20231101.ab,wikimedia/wikipedia,manual,,,,,0,,,,,0,reconstruction differs in 1 cell(s),,6152,False,,,,,invalid,manual,0,0,False,,,,
+0,2,,,,,manual_wiki_2,20231101.ab,wikimedia/wikipedia,manual,,,,,0,,,,,0,candidate does not reduce Snappy Parquet size,,6152,False,217913,229302,-11389,-0.052263976908215666,rejected,manual,0,0,False,,,,
+0,2,,,,,manual_wiki_3,20231101.ab,wikimedia/wikipedia,manual,,,,,0,,,,,0,reconstruction differs in 1 cell(s),,6152,False,,,,,invalid,manual,0,0,False,,,,
+0,0,598249,567559,30690,0.05129970965266971,manual_wiki_4,20231101.ab,wikimedia/wikipedia,manual,717731,677588,40143,0.05593042518715229,0,1193443,1136398,57045,0.04779867995371375,0,,11.115304400000001,6152,True,1243983,1186095,57888,0.04653439797810742,valid,manual,0,0,True,794286,755821,38465,0.048427140853546456
+0,,,,,,,20231101.ab,wikimedia/wikipedia,heuristic,,,,,0,,,,,0,no candidates were produced,,6152,False,,,,,skipped,heuristic,0,0,False,,,,
+0,,,,,,,20231101.ab,wikimedia/wikipedia,agent,,,,,0,,,,,0,offline mode,,6152,False,,,,,skipped,single,0,0,False,,,,
+0,,,,,,,20231101.ab,wikimedia/wikipedia,agent,,,,,0,,,,,0,offline mode,,6152,False,,,,,skipped,two_stage,0,0,False,,,,
+0,,,,,,,20231101.ab,wikimedia/wikipedia,agent,,,,,0,,,,,0,offline mode,,6152,False,,,,,skipped,tool_loop,0,0,False,,,,
+,,,,,,,20231101.af,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.azb,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.bg,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.ady,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.ar,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.de,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.ceb,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,
+,,,,,,,20231101.nl,wikimedia/wikipedia,dataset,,,,,,,,,,,dataset is not local and is outside the capped bootstrap allowlist,,0,False,,,,,skipped,,,,False,,,,

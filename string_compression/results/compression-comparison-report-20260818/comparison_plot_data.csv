@@ -1,0 +1,55 @@
+dataset_id,config_name,dataset_label,rows,codec,strategy,strategy_label,candidate_id,status,fallback_to_original,original_bytes,compressed_bytes,size_ratio,savings_bytes,savings_ratio,reason
+wikimedia/wikipedia,20231101.zh-classical,20231101.zh-classical,12708,snappy,original,Original,identity,original,False,9957397,9957397,1.0,0,0.0,
+wikimedia/wikipedia,20231101.zh-classical,20231101.zh-classical,12708,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,9957397,9957397,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.zh-classical,20231101.zh-classical,12708,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,9957397,9803107,0.9845049865943881,154290,0.015495013405611928,
+wikimedia/wikipedia,20231101.zh-classical,20231101.zh-classical,12708,snappy,single,Agent single,identity,completed,True,9957397,9957397,1.0,0,0.0,"no candidate passed lossless, size-positive full validation"
+wikimedia/wikipedia,20231101.zh-classical,20231101.zh-classical,12708,snappy,two_stage,Agent two-stage,url_from_title,valid,False,9957397,9720362,0.9761950839160074,237035,0.023804916083992635,
+wikimedia/wikipedia,20231101.zh-classical,20231101.zh-classical,12708,snappy,tool_loop,Agent tool-loop,url_title_from_suffix,valid,False,9957397,9778481,0.9820318502917982,178916,0.017968149708201854,
+wikimedia/wikipedia,20231101.ab,20231101.ab,6152,snappy,original,Original,identity,original,False,1243983,1243983,1.0,0,0.0,
+wikimedia/wikipedia,20231101.ab,20231101.ab,6152,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,1243983,1243983,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.ab,20231101.ab,6152,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,1243983,1186095,0.9534656020218926,57888,0.04653439797810742,
+wikimedia/wikipedia,20231101.ab,20231101.ab,6152,snappy,single,Agent single,url_from_title,valid,False,1243983,1169333,0.9399911413580411,74650,0.060008858641958936,
+wikimedia/wikipedia,20231101.ab,20231101.ab,6152,snappy,two_stage,Agent two-stage,url_from_title,valid,False,1243983,1169198,0.9398826189746966,74785,0.0601173810253034,
+wikimedia/wikipedia,20231101.ab,20231101.ab,6152,snappy,tool_loop,Agent tool-loop,identity,error,True,1243983,1243983,1.0,0,0.0,ValueError: tool loop ended without submit_candidates
+wikimedia/wikipedia,20231101.af,20231101.af,20000,snappy,original,Original,identity,original,False,38842945,38842945,1.0,0,0.0,
+wikimedia/wikipedia,20231101.af,20231101.af,20000,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,38842945,38842945,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.af,20231101.af,20000,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,38842945,38576496,0.9931403501974425,266449,0.006859649802557453,
+wikimedia/wikipedia,20231101.af,20231101.af,20000,snappy,single,Agent single,url_from_title,valid,False,38842945,38539578,0.9921899073306619,303367,0.007810092669338023,
+wikimedia/wikipedia,20231101.af,20231101.af,20000,snappy,two_stage,Agent two-stage,url_from_title,valid,False,38842945,38539640,0.992191503502116,303305,0.007808496497883979,
+wikimedia/wikipedia,20231101.af,20231101.af,20000,snappy,tool_loop,Agent tool-loop,identity,error,True,38842945,38842945,1.0,0,0.0,ValueError: tool loop ended without submit_candidates
+wikimedia/wikipedia,20231101.azb,20231101.azb,20000,snappy,original,Original,identity,original,False,9384190,9384190,1.0,0,0.0,
+wikimedia/wikipedia,20231101.azb,20231101.azb,20000,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,9384190,9384190,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.azb,20231101.azb,20000,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,9384190,9098099,0.9695135115550729,286091,0.030486488444927053,
+wikimedia/wikipedia,20231101.azb,20231101.azb,20000,snappy,single,Agent single,url_from_title,valid,False,9384190,8955171,0.9542827883919657,429019,0.04571721160803437,
+wikimedia/wikipedia,20231101.azb,20231101.azb,20000,snappy,two_stage,Agent two-stage,url_and_text_from_title,valid,False,9384190,8825573,0.9404725394519932,558617,0.059527460548006804,
+wikimedia/wikipedia,20231101.azb,20231101.azb,20000,snappy,tool_loop,Agent tool-loop,identity,error,True,9384190,9384190,1.0,0,0.0,ValueError: tool loop ended without submit_candidates
+wikimedia/wikipedia,20231101.bg,20231101.bg,20000,snappy,original,Original,identity,original,False,68833228,68833228,1.0,0,0.0,
+wikimedia/wikipedia,20231101.bg,20231101.bg,20000,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,68833228,68833228,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.bg,20231101.bg,20000,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,68833228,68539364,0.9957307828132076,293864,0.004269217186792402,
+wikimedia/wikipedia,20231101.bg,20231101.bg,20000,snappy,single,Agent single,url_and_text_title_prefix,valid,False,68833228,68348063,0.9929515872770053,485165,0.007048412722994772,
+wikimedia/wikipedia,20231101.bg,20231101.bg,20000,snappy,two_stage,Agent two-stage,url_from_title,valid,False,68833228,68399674,0.993701385034565,433554,0.006298614965435007,
+wikimedia/wikipedia,20231101.bg,20231101.bg,20000,snappy,tool_loop,Agent tool-loop,identity,error,True,68833228,68833228,1.0,0,0.0,ValueError: tool loop ended without submit_candidates
+wikimedia/wikipedia,20231101.ady,20231101.ady,706,snappy,original,Original,identity,original,False,345621,345621,1.0,0,0.0,
+wikimedia/wikipedia,20231101.ady,20231101.ady,706,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,345621,345621,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.ady,20231101.ady,706,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,345621,335769,0.9714947876431119,9852,0.028505212356888035,
+wikimedia/wikipedia,20231101.ady,20231101.ady,706,snappy,single,Agent single,url_and_leading_title_text,valid,False,345621,332681,0.9625601453615377,12940,0.03743985463846236,
+wikimedia/wikipedia,20231101.ady,20231101.ady,706,snappy,two_stage,Agent two-stage,url_title,valid,False,345621,333180,0.9640039233727117,12441,0.03599607662728827,
+wikimedia/wikipedia,20231101.ady,20231101.ady,706,snappy,tool_loop,Agent tool-loop,identity,error,True,345621,345621,1.0,0,0.0,ValueError: tool loop ended without submit_candidates
+wikimedia/wikipedia,20231101.ceb,20231101.ceb,20000,snappy,original,Original,identity,original,False,1776099,1776099,1.0,0,0.0,
+wikimedia/wikipedia,20231101.ceb,20231101.ceb,20000,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,skipped,True,1776099,1776099,1.0,0,0.0,no candidates were produced
+wikimedia/wikipedia,20231101.ceb,20231101.ceb,20000,snappy,manual,Historical hand-written,manual_wiki_4,valid,False,1776099,1537632,0.8657355248778362,238467,0.1342644751221638,
+wikimedia/wikipedia,20231101.ceb,20231101.ceb,20000,snappy,single,Agent single,url_from_title,valid,False,1776099,1506500,0.8482072226829698,269599,0.1517927773170302,
+wikimedia/wikipedia,20231101.ceb,20231101.ceb,20000,snappy,two_stage,Agent two-stage,url_title_encode,valid,False,1776099,1506425,0.848164995307131,269674,0.15183500469286904,
+wikimedia/wikipedia,20231101.ceb,20231101.ceb,20000,snappy,tool_loop,Agent tool-loop,url_title_path,valid,False,1776099,1511405,0.8509688930628304,264694,0.14903110693716962,
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,original,Original,identity,original,False,10003818,10003818,1.0,0,0.0,
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,heuristic,Algorithmic auto-prefix/suffix,identity,completed,True,10003818,10003818,1.0,0,0.0,"no candidate passed lossless, size-positive full validation"
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,manual,Historical hand-written,manual_fineweb_5,valid,False,10003818,9995066,0.9991251340238297,8752,0.0008748659761702982,
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,single,Agent single,identity,completed,True,10003818,10003818,1.0,0,0.0,"no candidate passed lossless, size-positive full validation"
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,two_stage,Agent two-stage,filepath_affix_language_en,valid,False,10003818,10001564,0.9997746860248757,2254,0.00022531397512429754,
+HuggingFaceFW/fineweb,sample-10BT,sample-10BT,5000,snappy,tool_loop,Agent tool-loop,identity,error,True,10003818,10003818,1.0,0,0.0,ValueError: tool loop ended without submit_candidates
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,original,Original,identity,original,False,302568,302568,1.0,0,0.0,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,heuristic,Algorithmic auto-prefix/suffix,heuristic_1_domain_from_0_url,valid,False,302568,264940,0.8756378731392612,37628,0.12436212686073875,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,manual,Historical hand-written,manual_fineweb_url_3,valid,False,302568,260065,0.8595257925491129,42503,0.14047420745088707,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,single,Agent single,domain_first_occurrence,valid,False,302568,264765,0.875059490759102,37803,0.12494050924089792,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,two_stage,Agent two-stage,domain_last_two_labels,valid,False,302568,272431,0.9003959440522461,30137,0.0996040559477539,
+nhagar/fineweb_urls,,nhagar/fineweb_urls,5000,snappy,tool_loop,Agent tool-loop,identity,error,True,302568,302568,1.0,0,0.0,ValueError: tool loop ended without submit_candidates

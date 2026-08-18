@@ -1,0 +1,2803 @@
+{
+  "format_version": 1,
+  "created_at": "2026-08-17T22:39:44.695681+00:00",
+  "config_path": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/config.json",
+  "max_rows": 20000,
+  "strategies": [
+    "single",
+    "two_stage",
+    "tool_loop"
+  ],
+  "model": "gpt-5.6-terra",
+  "datasets": [
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.zh-classical",
+      "resolution_status": "bootstrapped",
+      "status": "available",
+      "reason": null,
+      "groups": [
+        {
+          "name": "manual",
+          "strategy": "manual",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "manual_wiki_1",
+                "summary": "Drop URL and reconstruct it from the language prefix and encoded title.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT * EXCLUDE (\"url\") FROM source",
+                "reconstruction_sql": "SELECT *, 'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\") AS \"url\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_1",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 761177,
+                      "savings_bytes": 19654,
+                      "savings_ratio": 0.025170619506653807
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.0606257498729974,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_1",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 6 cell(s)",
+                  "rows": 10000,
+                  "mismatch_count": 6,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 9318,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90/%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9...",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90%2F%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%..."
+                    },
+                    {
+                      "row_id": 9417,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE/%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE%2F%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9422,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89/%E5%85%92%E8%88%87%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89%2F%E5%85%92%E8%88%87%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9435,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF/%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF%2F%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'"
+                    },
+                    {
+                      "row_id": 9438,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F/%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F%2F%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.13588012498803437,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "manual_wiki_2",
+                "summary": "Concatenate title and text and retain the title length.",
+                "target_columns": [
+                  "title",
+                  "text"
+                ],
+                "reference_columns": [],
+                "residual_columns": [
+                  {
+                    "name": "__v_wiki_title_text",
+                    "purpose": "Concatenated title and text"
+                  },
+                  {
+                    "name": "__v_wiki_title_len",
+                    "purpose": "Title length"
+                  }
+                ],
+                "compression_sql": "SELECT * EXCLUDE (\"title\", \"text\"), \"title\" || \"text\" AS \"__v_wiki_title_text\", length(\"title\") AS \"__v_wiki_title_len\" FROM source",
+                "reconstruction_sql": "SELECT * EXCLUDE (\"__v_wiki_title_text\", \"__v_wiki_title_len\"), substr(\"__v_wiki_title_text\", 1, \"__v_wiki_title_len\") AS \"title\", substr(\"__v_wiki_title_text\", \"__v_wiki_title_len\" + 1) AS \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_2",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 774678,
+                      "savings_bytes": 6153,
+                      "savings_ratio": 0.007880066237124294
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.0628594581503421,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_2",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7833452,
+                      "savings_bytes": 76020,
+                      "savings_ratio": 0.009611261029813368
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.26136020803824067,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_2",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9867483,
+                      "savings_bytes": 89914,
+                      "savings_ratio": 0.009029869954969155
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6606279,
+                      "savings_bytes": 64500,
+                      "savings_ratio": 0.009669035655355993
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5861075,
+                      "savings_bytes": 62001,
+                      "savings_ratio": 0.010467702930031625
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10219993,
+                      "savings_bytes": 91956,
+                      "savings_ratio": 0.008917421915100627
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7992666,
+                      "savings_bytes": 66794,
+                      "savings_ratio": 0.008287652026314419
+                    }
+                  },
+                  "reconstruction_latency_ms": 40.7248752,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.963580457959324,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_2/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_2/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_2/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_2/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_2/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "manual_wiki_3",
+                "summary": "Combine title/text and reconstruct URL from the reconstructed title.",
+                "target_columns": [
+                  "url",
+                  "title",
+                  "text"
+                ],
+                "reference_columns": [],
+                "residual_columns": [
+                  {
+                    "name": "__v_wiki_title_text",
+                    "purpose": "Concatenated title and text"
+                  },
+                  {
+                    "name": "__v_wiki_title_len",
+                    "purpose": "Title length"
+                  }
+                ],
+                "compression_sql": "SELECT * EXCLUDE (\"url\", \"title\", \"text\"), \"title\" || \"text\" AS \"__v_wiki_title_text\", length(\"title\") AS \"__v_wiki_title_len\" FROM source",
+                "reconstruction_sql": "SELECT * EXCLUDE (\"__v_wiki_title_text\", \"__v_wiki_title_len\"), substr(\"__v_wiki_title_text\", 1, \"__v_wiki_title_len\") AS \"title\", substr(\"__v_wiki_title_text\", \"__v_wiki_title_len\" + 1) AS \"text\", 'https://zh-classical.wikipedia.org/wiki/' || url_encode(substr(\"__v_wiki_title_text\", 1, \"__v_wiki_title_len\")) AS \"url\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_3",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 754436,
+                      "savings_bytes": 26395,
+                      "savings_ratio": 0.0338037296162678
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.07158829201944172,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_3",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 6 cell(s)",
+                  "rows": 10000,
+                  "mismatch_count": 6,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 9318,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90/%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9...",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90%2F%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%..."
+                    },
+                    {
+                      "row_id": 9417,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE/%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE%2F%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9422,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89/%E5%85%92%E8%88%87%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89%2F%E5%85%92%E8%88%87%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9435,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF/%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF%2F%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'"
+                    },
+                    {
+                      "row_id": 9438,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F/%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F%2F%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.1522955831605941,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "manual_wiki_4",
+                "summary": "Drop title and decode it from the URL.",
+                "target_columns": [
+                  "title"
+                ],
+                "reference_columns": [
+                  "url"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT * EXCLUDE (\"title\") FROM source",
+                "reconstruction_sql": "SELECT *, url_decode(CASE WHEN starts_with(\"url\", 'https://zh-classical.wikipedia.org/wiki/') THEN substr(\"url\", length('https://zh-classical.wikipedia.org/wiki/') + 1) ELSE \"url\" END) AS \"title\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_4",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 768622,
+                      "savings_bytes": 12209,
+                      "savings_ratio": 0.01563590584902495
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.057210625149309635,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_4",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7786848,
+                      "savings_bytes": 122624,
+                      "savings_ratio": 0.015503436891868382
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.3493873339612037,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_4",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9803107,
+                      "savings_bytes": 154290,
+                      "savings_ratio": 0.015495013405611928
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6561228,
+                      "savings_bytes": 109551,
+                      "savings_ratio": 0.01642251976868069
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5820958,
+                      "savings_bytes": 102118,
+                      "savings_ratio": 0.017240703985564258
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10154584,
+                      "savings_bytes": 157365,
+                      "savings_ratio": 0.0152604517341969
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7939467,
+                      "savings_bytes": 119993,
+                      "savings_ratio": 0.014888466472939874
+                    }
+                  },
+                  "reconstruction_latency_ms": 29.0679916,
+                  "counterexamples": [],
+                  "elapsed_seconds": 6.149416249943897,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_4/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_4/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_4/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_4/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/manual/manual_wiki_4/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": true
+            }
+          ],
+          "selected_candidate_id": "manual_wiki_4"
+        },
+        {
+          "name": "heuristic",
+          "strategy": "heuristic",
+          "status": "skipped",
+          "candidates": [],
+          "reason": "no candidates were produced"
+        },
+        {
+          "name": "agent",
+          "strategy": "single",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "url_prefix_tail",
+                "summary": "Remove the fixed Wikipedia URL prefix when present; retain a flag and the remaining suffix (or the complete URL otherwise).",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "id",
+                  "title",
+                  "text"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "u_p",
+                    "purpose": "Whether the URL begins with the stored fixed prefix."
+                  },
+                  {
+                    "name": "u_r",
+                    "purpose": "URL suffix after the prefix when u_p is true; otherwise the original URL."
+                  }
+                ],
+                "compression_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"title\",\n  \"text\",\n  COALESCE(left(\"url\", length('https://zh-classical.wikipedia.org/wiki/%E')) = 'https://zh-classical.wikipedia.org/wiki/%E', FALSE) AS \"u_p\",\n  CASE\n    WHEN COALESCE(left(\"url\", length('https://zh-classical.wikipedia.org/wiki/%E')) = 'https://zh-classical.wikipedia.org/wiki/%E', FALSE)\n      THEN substr(\"url\", length('https://zh-classical.wikipedia.org/wiki/%E') + 1)\n    ELSE \"url\"\n  END AS \"u_r\"\nFROM source",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"u_p\" THEN 'https://zh-classical.wikipedia.org/wiki/%E' || \"u_r\"\n    ELSE \"u_r\"\n  END AS \"url\",\n  \"title\",\n  \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_prefix_tail",
+                  "split": "discovery",
+                  "valid": false,
+                  "status": "rejected",
+                  "reason": "candidate does not reduce Snappy Parquet size",
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "u_p",
+                    "u_r"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 781876,
+                      "savings_bytes": -1045,
+                      "savings_ratio": -0.0013383177665845746
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.05777441686950624,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "url_from_title",
+                "summary": "Reconstruct canonical Wikipedia URLs by URL-encoding title; retain the original URL only for noncanonical rows.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "id",
+                  "title",
+                  "text"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "u_ok",
+                    "purpose": "Whether URL exactly equals the prefix plus the URL-encoded title."
+                  },
+                  {
+                    "name": "u_e",
+                    "purpose": "Original URL fallback for rows that do not satisfy u_ok, including NULL URLs."
+                  }
+                ],
+                "compression_sql": "WITH x AS (\n  SELECT\n    *,\n    \"url\" IS NOT NULL\n      AND \"url\" = 'https://zh-classical.wikipedia.org/wiki/%E' || url_encode(\"title\") AS ok\n  FROM source\n)\nSELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"title\",\n  \"text\",\n  ok AS \"u_ok\",\n  CASE WHEN ok THEN NULL ELSE \"url\" END AS \"u_e\"\nFROM x",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"u_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/%E' || url_encode(\"title\")\n    ELSE \"u_e\"\n  END AS \"url\",\n  \"title\",\n  \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "discovery",
+                  "valid": false,
+                  "status": "rejected",
+                  "reason": "candidate does not reduce Snappy Parquet size",
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "u_ok",
+                    "u_e"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 783757,
+                      "savings_bytes": -2926,
+                      "savings_ratio": -0.003747289746436809
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.05494149983860552,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "url_and_title_from_path",
+                "summary": "Remove both URL and title for rows whose canonical URL is the encoded title; preserve both originals as explicit fallbacks otherwise.",
+                "target_columns": [
+                  "url",
+                  "title"
+                ],
+                "reference_columns": [
+                  "id",
+                  "text"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "ut_ok",
+                    "purpose": "Whether non-NULL URL exactly equals the fixed prefix plus the URL-encoded non-NULL title."
+                  },
+                  {
+                    "name": "ut_u",
+                    "purpose": "Original URL fallback when ut_ok is false."
+                  },
+                  {
+                    "name": "ut_t",
+                    "purpose": "Original title fallback when ut_ok is false."
+                  }
+                ],
+                "compression_sql": "WITH x AS (\n  SELECT\n    *,\n    \"url\" IS NOT NULL\n      AND \"title\" IS NOT NULL\n      AND \"url\" = 'https://zh-classical.wikipedia.org/wiki/%E' || url_encode(\"title\") AS ok\n  FROM source\n)\nSELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"text\",\n  ok AS \"ut_ok\",\n  CASE WHEN ok THEN NULL ELSE \"url\" END AS \"ut_u\",\n  CASE WHEN ok THEN NULL ELSE \"title\" END AS \"ut_t\"\nFROM x",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"ut_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/%E' || url_encode(url_decode(substr('https://zh-classical.wikipedia.org/wiki/%E' || '', length('https://zh-classical.wikipedia.org/wiki/%E') + 1)))\n    ELSE \"ut_u\"\n  END AS \"url\",\n  CASE\n    WHEN \"ut_ok\" THEN url_decode(substr(CASE WHEN \"ut_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/%E' || url_encode(url_decode(substr(\"ut_u\", length('https://zh-classical.wikipedia.org/wiki/%E') + 1))) ELSE \"ut_u\" END, length('https://zh-classical.wikipedia.org/wiki/%E') + 1))\n    ELSE \"ut_t\"\n  END AS \"title\",\n  \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_and_title_from_path",
+                  "split": "discovery",
+                  "valid": false,
+                  "status": "rejected",
+                  "reason": "candidate does not reduce Snappy Parquet size",
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "text",
+                    "ut_ok",
+                    "ut_u",
+                    "ut_t"
+                  ],
+                  "auxiliary_columns": 3,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 785215,
+                      "savings_bytes": -4384,
+                      "savings_ratio": -0.005614531185365335
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.05657416605390608,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            }
+          ],
+          "reason": "no candidate passed lossless, size-positive full validation",
+          "model": "gpt-5.6-terra",
+          "usage": [
+            {
+              "response_id": "resp_0de0ebc680ef6237016a838dc1ad6881929d394e5400dca782",
+              "input_tokens": 10080,
+              "output_tokens": 2575,
+              "total_tokens": 12655,
+              "elapsed_seconds": 26.63619870808907
+            }
+          ],
+          "calls": 1,
+          "tool_calls": 0,
+          "agent_elapsed_seconds": 26.637149666901678,
+          "lineage": {
+            "url_prefix_tail": {
+              "stage": "initial"
+            },
+            "url_from_title": {
+              "stage": "initial"
+            },
+            "url_and_title_from_path": {
+              "stage": "initial"
+            }
+          }
+        },
+        {
+          "name": "agent",
+          "strategy": "two_stage",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "url_from_title",
+                "summary": "Remove \"url\" when it is exactly the fixed wiki prefix plus URL-encoding of the retained title; retain an explicit match flag and exact fallback.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "id",
+                  "title",
+                  "text"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "url_ok",
+                    "purpose": "Whether \"url\" exactly equals the deterministic URL generated from \"title\"."
+                  },
+                  {
+                    "name": "url_err",
+                    "purpose": "Original \"url\" when the generated URL is not exact."
+                  }
+                ],
+                "compression_sql": "WITH f AS (\n  SELECT *,\n    'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\") AS \"gen_url\"\n  FROM source\n)\nSELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"title\",\n  \"text\",\n  (\"url\" IS NOT DISTINCT FROM \"gen_url\") AS \"url_ok\",\n  CASE WHEN \"url\" IS NOT DISTINCT FROM \"gen_url\" THEN CAST(NULL AS VARCHAR) ELSE \"url\" END AS \"url_err\"\nFROM f",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"url_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\")\n    ELSE \"url_err\"\n  END AS \"url\",\n  \"title\",\n  \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "url_ok",
+                    "url_err"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 763836,
+                      "savings_bytes": 16995,
+                      "savings_ratio": 0.021765273151296505
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.057755458168685436,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "url_ok",
+                    "url_err"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7722241,
+                      "savings_bytes": 187231,
+                      "savings_ratio": 0.0236717444603129
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.2597739170305431,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "url_ok",
+                    "url_err"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9720335,
+                      "savings_bytes": 237062,
+                      "savings_ratio": 0.023807627636017726
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6531287,
+                      "savings_bytes": 139492,
+                      "savings_ratio": 0.020910901110649895
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5793975,
+                      "savings_bytes": 129101,
+                      "savings_ratio": 0.02179627612409498
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10075493,
+                      "savings_bytes": 236456,
+                      "savings_ratio": 0.022930291839108205
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7909810,
+                      "savings_bytes": 149650,
+                      "savings_ratio": 0.018568241544718877
+                    }
+                  },
+                  "reconstruction_latency_ms": 26.2533293,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.068170249927789,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_from_title/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_from_title/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_from_title/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_from_title/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_from_title/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "url_and_title_from_suffix",
+                "summary": "Remove both URL and title when the URL has the observed wiki prefix and its percent-decoded suffix is exactly the title; otherwise retain exact originals.",
+                "target_columns": [
+                  "url",
+                  "title"
+                ],
+                "reference_columns": [
+                  "id",
+                  "text"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "u_ok",
+                    "purpose": "Whether the URL suffix decodes exactly to the original title."
+                  },
+                  {
+                    "name": "u",
+                    "purpose": "Encoded URL suffix on matching rows, otherwise the complete original URL."
+                  },
+                  {
+                    "name": "te",
+                    "purpose": "Original title only for nonmatching rows."
+                  }
+                ],
+                "compression_sql": "WITH raw AS (\n  SELECT *,\n    substr(\"url\", length('https://zh-classical.wikipedia.org/wiki/') + 1) AS \"su\"\n  FROM source\n), marked AS (\n  SELECT *,\n    coalesce(\n      \"url\" LIKE 'https://zh-classical.wikipedia.org/wiki/%'\n      AND try(url_decode(\"su\")) IS NOT DISTINCT FROM \"title\",\n      false\n    ) AS \"u_ok0\"\n  FROM raw\n)\nSELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"text\",\n  \"u_ok0\" AS \"u_ok\",\n  CASE WHEN \"u_ok0\" THEN \"su\" ELSE \"url\" END AS \"u\",\n  CASE WHEN \"u_ok0\" THEN CAST(NULL AS VARCHAR) ELSE \"title\" END AS \"te\"\nFROM marked",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"u_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/' || \"u\"\n    ELSE \"u\"\n  END AS \"url\",\n  CASE\n    WHEN \"u_ok\" THEN url_decode(\"u\")\n    ELSE \"te\"\n  END AS \"title\",\n  \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_and_title_from_suffix",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "text",
+                    "u_ok",
+                    "u",
+                    "te"
+                  ],
+                  "auxiliary_columns": 3,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 769557,
+                      "savings_bytes": 11274,
+                      "savings_ratio": 0.014438463636817698
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.061522167176008224,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_and_title_from_suffix",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "text",
+                    "u_ok",
+                    "u",
+                    "te"
+                  ],
+                  "auxiliary_columns": 3,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7769792,
+                      "savings_bytes": 139680,
+                      "savings_ratio": 0.017659838735126693
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.25471704197116196,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_and_title_from_suffix",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "text",
+                    "u_ok",
+                    "u",
+                    "te"
+                  ],
+                  "auxiliary_columns": 3,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9781236,
+                      "savings_bytes": 176161,
+                      "savings_ratio": 0.017691470973789637
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6550872,
+                      "savings_bytes": 119907,
+                      "savings_ratio": 0.017974962144601103
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5814205,
+                      "savings_bytes": 108871,
+                      "savings_ratio": 0.018380821046361722
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10142516,
+                      "savings_bytes": 169433,
+                      "savings_ratio": 0.01643074456632786
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7932383,
+                      "savings_bytes": 127077,
+                      "savings_ratio": 0.015767433550138595
+                    }
+                  },
+                  "reconstruction_latency_ms": 34.9967625,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.508228291058913,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_title_from_suffix/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_title_from_suffix/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_title_from_suffix/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_title_from_suffix/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_title_from_suffix/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "url_and_text_prefix",
+                "summary": "Remove URL through title URL-encoding and remove text by storing only the suffix when text begins with the retained title; each transformation has an independent exact fallback.",
+                "target_columns": [
+                  "url",
+                  "text"
+                ],
+                "reference_columns": [
+                  "id",
+                  "title"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "url_ok",
+                    "purpose": "Whether URL equals the prefix plus URL-encoded title."
+                  },
+                  {
+                    "name": "url_err",
+                    "purpose": "Original URL for URL formula failures."
+                  },
+                  {
+                    "name": "txt_ok",
+                    "purpose": "Whether text begins exactly with title."
+                  },
+                  {
+                    "name": "txt_frag",
+                    "purpose": "Text after its title prefix on matching rows, otherwise the complete original text."
+                  }
+                ],
+                "compression_sql": "WITH f AS (\n  SELECT *,\n    'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\") AS \"gen_url\",\n    coalesce(starts_with(\"text\", \"title\"), false) AS \"txt_ok0\"\n  FROM source\n)\nSELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"title\",\n  (\"url\" IS NOT DISTINCT FROM \"gen_url\") AS \"url_ok\",\n  CASE WHEN \"url\" IS NOT DISTINCT FROM \"gen_url\" THEN CAST(NULL AS VARCHAR) ELSE \"url\" END AS \"url_err\",\n  \"txt_ok0\" AS \"txt_ok\",\n  CASE WHEN \"txt_ok0\" THEN substr(\"text\", length(\"title\") + 1) ELSE \"text\" END AS \"txt_frag\"\nFROM f",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"url_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\")\n    ELSE \"url_err\"\n  END AS \"url\",\n  \"title\",\n  CASE WHEN \"txt_ok\" THEN \"title\" || \"txt_frag\" ELSE \"txt_frag\" END AS \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_and_text_prefix",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "url_ok",
+                    "url_err",
+                    "txt_ok",
+                    "txt_frag"
+                  ],
+                  "auxiliary_columns": 4,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 759032,
+                      "savings_bytes": 21799,
+                      "savings_ratio": 0.02791769281701162
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.07263841689564288,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_and_text_prefix",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "url_ok",
+                    "url_err",
+                    "txt_ok",
+                    "txt_frag"
+                  ],
+                  "auxiliary_columns": 4,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7678605,
+                      "savings_bytes": 230867,
+                      "savings_ratio": 0.02918867403538441
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.41264666616916656,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_and_text_prefix",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "url_ok",
+                    "url_err",
+                    "txt_ok",
+                    "txt_frag"
+                  ],
+                  "auxiliary_columns": 4,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9663541,
+                      "savings_bytes": 293856,
+                      "savings_ratio": 0.029511327106873413
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6487450,
+                      "savings_bytes": 183329,
+                      "savings_ratio": 0.02748239748311254
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5752431,
+                      "savings_bytes": 170645,
+                      "savings_ratio": 0.028810199295095994
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10011310,
+                      "savings_bytes": 300639,
+                      "savings_ratio": 0.029154430457326738
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7854309,
+                      "savings_bytes": 205151,
+                      "savings_ratio": 0.025454683068096375
+                    }
+                  },
+                  "reconstruction_latency_ms": 27.621729199999997,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.435723667033017,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_text_prefix/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_text_prefix/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_text_prefix/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_text_prefix/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_and_text_prefix/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": true
+            },
+            {
+              "candidate": {
+                "id": "url_title_text_from_suffixes",
+                "summary": "Remove URL, title, and text together when URL decodes to title and text starts with title; keep complete values in explicit fallback fields for every nonconforming row.",
+                "target_columns": [
+                  "url",
+                  "title",
+                  "text"
+                ],
+                "reference_columns": [
+                  "id"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "ut_ok",
+                    "purpose": "Whether URL is a prefixed encoded title and text begins with that title."
+                  },
+                  {
+                    "name": "u",
+                    "purpose": "Encoded URL suffix on matching rows, otherwise the original URL."
+                  },
+                  {
+                    "name": "te",
+                    "purpose": "Original title only for nonmatching rows."
+                  },
+                  {
+                    "name": "x",
+                    "purpose": "Text after the title prefix on matching rows, otherwise the original text."
+                  }
+                ],
+                "compression_sql": "WITH raw AS (\n  SELECT *,\n    substr(\"url\", length('https://zh-classical.wikipedia.org/wiki/') + 1) AS \"su\",\n    substr(\"text\", length(\"title\") + 1) AS \"sx\"\n  FROM source\n), marked AS (\n  SELECT *,\n    coalesce(\n      \"url\" LIKE 'https://zh-classical.wikipedia.org/wiki/%'\n      AND try(url_decode(\"su\")) IS NOT DISTINCT FROM \"title\"\n      AND starts_with(\"text\", \"title\"),\n      false\n    ) AS \"ut_ok0\"\n  FROM raw\n)\nSELECT\n  \"__virtual_row_id\",\n  \"id\",\n  \"ut_ok0\" AS \"ut_ok\",\n  CASE WHEN \"ut_ok0\" THEN \"su\" ELSE \"url\" END AS \"u\",\n  CASE WHEN \"ut_ok0\" THEN CAST(NULL AS VARCHAR) ELSE \"title\" END AS \"te\",\n  CASE WHEN \"ut_ok0\" THEN \"sx\" ELSE \"text\" END AS \"x\"\nFROM marked",
+                "reconstruction_sql": "SELECT\n  \"__virtual_row_id\",\n  \"id\",\n  CASE\n    WHEN \"ut_ok\" THEN 'https://zh-classical.wikipedia.org/wiki/' || \"u\"\n    ELSE \"u\"\n  END AS \"url\",\n  CASE WHEN \"ut_ok\" THEN url_decode(\"u\") ELSE \"te\" END AS \"title\",\n  CASE\n    WHEN \"ut_ok\" THEN url_decode(\"u\") || \"x\"\n    ELSE \"x\"\n  END AS \"text\"\nFROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_title_text_from_suffixes",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "ut_ok",
+                    "u",
+                    "te",
+                    "x"
+                  ],
+                  "auxiliary_columns": 4,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 769223,
+                      "savings_bytes": 11608,
+                      "savings_ratio": 0.014866213047381572
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.06371633405797184,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_title_text_from_suffixes",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "ut_ok",
+                    "u",
+                    "te",
+                    "x"
+                  ],
+                  "auxiliary_columns": 4,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7775481,
+                      "savings_bytes": 133991,
+                      "savings_ratio": 0.01694057454151175
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.27493762504309416,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_title_text_from_suffixes",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "ut_ok",
+                    "u",
+                    "te",
+                    "x"
+                  ],
+                  "auxiliary_columns": 4,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9785651,
+                      "savings_bytes": 171746,
+                      "savings_ratio": 0.01724808200376062
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6551647,
+                      "savings_bytes": 119132,
+                      "savings_ratio": 0.01785878380920729
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5812508,
+                      "savings_bytes": 110568,
+                      "savings_ratio": 0.018667327584518584
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10135163,
+                      "savings_bytes": 176786,
+                      "savings_ratio": 0.01714380084695919
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7922724,
+                      "savings_bytes": 136736,
+                      "savings_ratio": 0.01696590094125413
+                    }
+                  },
+                  "reconstruction_latency_ms": 29.665716600000003,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.232186374953017,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_title_text_from_suffixes/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_title_text_from_suffixes/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_title_text_from_suffixes/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_title_text_from_suffixes/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_two_stage/url_title_text_from_suffixes/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": false
+            }
+          ],
+          "selected_candidate_id": "url_and_text_prefix",
+          "model": "gpt-5.6-terra",
+          "usage": [
+            {
+              "response_id": "resp_0b3b1288a2d9c429016a838ddc4a58819d9bb4347f5f1d388b",
+              "input_tokens": 10080,
+              "output_tokens": 3959,
+              "total_tokens": 14039,
+              "elapsed_seconds": 43.44621270918287
+            },
+            {
+              "response_id": "resp_0ef0f321270a0aa3016a838e0810f887d2b4ce72b5e4db9693",
+              "input_tokens": 12819,
+              "output_tokens": 1784,
+              "total_tokens": 14603,
+              "elapsed_seconds": 11.896755333989859
+            }
+          ],
+          "calls": 2,
+          "tool_calls": 0,
+          "agent_elapsed_seconds": 55.68215337512083,
+          "lineage": {
+            "url_from_title": {
+              "stage": "repair",
+              "initial_candidate_ids": [
+                "url_from_title",
+                "url_and_title_from_suffix",
+                "url_and_text_prefix",
+                "url_title_text_from_suffixes"
+              ]
+            },
+            "url_and_title_from_suffix": {
+              "stage": "repair",
+              "initial_candidate_ids": [
+                "url_from_title",
+                "url_and_title_from_suffix",
+                "url_and_text_prefix",
+                "url_title_text_from_suffixes"
+              ]
+            },
+            "url_and_text_prefix": {
+              "stage": "repair",
+              "initial_candidate_ids": [
+                "url_from_title",
+                "url_and_title_from_suffix",
+                "url_and_text_prefix",
+                "url_title_text_from_suffixes"
+              ]
+            },
+            "url_title_text_from_suffixes": {
+              "stage": "repair",
+              "initial_candidate_ids": [
+                "url_from_title",
+                "url_and_title_from_suffix",
+                "url_and_text_prefix",
+                "url_title_text_from_suffixes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "agent",
+          "strategy": "tool_loop",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "url-title",
+                "summary": "Reconstruct Wikipedia URLs from the title using deterministic percent encoding.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT \"__virtual_row_id\", \"id\", \"title\", \"text\" FROM source",
+                "reconstruction_sql": "SELECT \"__virtual_row_id\", \"id\", 'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\") AS \"url\", \"title\", \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url-title",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 761375,
+                      "savings_bytes": 19456,
+                      "savings_ratio": 0.024917043508774626
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.0958589999936521,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url-title",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 6 cell(s)",
+                  "rows": 10000,
+                  "mismatch_count": 6,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 9318,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90/%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9...",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90%2F%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%..."
+                    },
+                    {
+                      "row_id": 9417,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE/%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE%2F%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9422,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89/%E5%85%92%E8%88%87%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89%2F%E5%85%92%E8%88%87%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9435,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF/%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF%2F%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'"
+                    },
+                    {
+                      "row_id": 9438,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F/%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F%2F%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.13645983417518437,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "url-text-title",
+                "summary": "Reconstruct the URL from title and restore a title prefix in text when it was removed, with a fallback marker for nonmatching rows.",
+                "target_columns": [
+                  "url",
+                  "text"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "tp",
+                    "purpose": "Text suffix after a matching title prefix, or full text otherwise."
+                  },
+                  {
+                    "name": "tm",
+                    "purpose": "Whether the title must be prepended to tp."
+                  }
+                ],
+                "compression_sql": "SELECT \"__virtual_row_id\", \"id\", \"title\", CASE WHEN starts_with(\"text\", \"title\") THEN substr(\"text\", length(\"title\") + 1) ELSE \"text\" END AS \"tp\", starts_with(\"text\", \"title\") AS \"tm\" FROM source",
+                "reconstruction_sql": "SELECT \"__virtual_row_id\", \"id\", 'https://zh-classical.wikipedia.org/wiki/' || url_encode(\"title\") AS \"url\", \"title\", CASE WHEN \"tm\" THEN \"title\" || \"tp\" ELSE \"tp\" END AS \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url-text-title",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "tp",
+                    "tm"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 756456,
+                      "savings_bytes": 24375,
+                      "savings_ratio": 0.031216742163156945
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.05840220907703042,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url-text-title",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 6 cell(s)",
+                  "rows": 10000,
+                  "mismatch_count": 6,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "tp",
+                    "tm"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 9318,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90/%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9...",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%C2%B0%E8%8F%9C%C2%B0%E5%88%80%C2%B7%C2%B0%E9%89%B8%C2%B0%E5%89%AA%C2%B7%C2%B0%E7%BE%8E%C2%B0%E5%B7%A5%C2%B0%E5%88%80%C2%B7%C2%B0%E5%88%80%C2%B7%C2%B0%E5%8C%95%C2%B7%C2%B0%E9%8C%90%2F%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%E9%9D%88%..."
+                    },
+                    {
+                      "row_id": 9417,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE/%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E7%A6%8F%E5%85%AE%E7%A6%8D%E5%85%AE%2F%E5%98%BB%EF%BC%81%E6%91%AF%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9422,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89/%E5%85%92%E8%88%87%E6%84%9B'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E5%85%89%2F%E5%85%92%E8%88%87%E6%84%9B'"
+                    },
+                    {
+                      "row_id": 9435,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF/%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E4%BA%BA%E7%94%9F%E8%97%8D%E8%AA%BF%2F%E9%9D%92%E6%98%A5%E4%B9%8B%E5%A4%9C'"
+                    },
+                    {
+                      "row_id": 9438,
+                      "column": "url",
+                      "expected": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F/%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'",
+                      "actual": "'https://zh-classical.wikipedia.org/wiki/%E3%80%8C%E6%B1%9D%E8%83%BD%E7%8D%A8%E5%B1%85%E3%80%8D%E6%AD%A4%E8%A8%80%E5%96%84%E4%B9%8E%EF%BC%9F%2F%E8%8A%B1%E4%BF%A1%E5%B9%B4%E8%8F%AF%E5%8F%88%E4%B8%80%E6%AD%B2%E6%B0%B8%E9%81%A0%E8%AA%AA'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.13975254213437438,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "text-title-prefix",
+                "summary": "Remove a leading title from article text when present, retaining an explicit indicator for rows that do not have that prefix.",
+                "target_columns": [
+                  "text"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "tp",
+                    "purpose": "Text suffix after a matching title prefix, or the full text when no prefix matched."
+                  },
+                  {
+                    "name": "tm",
+                    "purpose": "Whether tp is a suffix requiring the title prefix to be restored."
+                  }
+                ],
+                "compression_sql": "SELECT \"__virtual_row_id\", \"id\", \"url\", \"title\", CASE WHEN starts_with(\"text\", \"title\") THEN substr(\"text\", length(\"title\") + 1) ELSE \"text\" END AS \"tp\", starts_with(\"text\", \"title\") AS \"tm\" FROM source",
+                "reconstruction_sql": "SELECT \"__virtual_row_id\", \"id\", \"url\", \"title\", CASE WHEN \"tm\" THEN \"title\" || \"tp\" ELSE \"tp\" END AS \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "text-title-prefix",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "title",
+                    "tp",
+                    "tm"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 776993,
+                      "savings_bytes": 3838,
+                      "savings_ratio": 0.00491527616091062
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.06669274996966124,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "text-title-prefix",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "title",
+                    "tp",
+                    "tm"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7866805,
+                      "savings_bytes": 42667,
+                      "savings_ratio": 0.005394418236767258
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.26109174988232553,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "text-title-prefix",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "title",
+                    "tp",
+                    "tm"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9901572,
+                      "savings_bytes": 55825,
+                      "savings_ratio": 0.0056063848815107
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6627911,
+                      "savings_bytes": 42868,
+                      "savings_ratio": 0.006426235976337996
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5882501,
+                      "savings_bytes": 40575,
+                      "savings_ratio": 0.006850325742907908
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10248735,
+                      "savings_bytes": 63214,
+                      "savings_ratio": 0.006130169961081072
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 8004928,
+                      "savings_bytes": 54532,
+                      "savings_ratio": 0.006766210143111325
+                    }
+                  },
+                  "reconstruction_latency_ms": 25.417708400000002,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.166519124992192,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/text-title-prefix/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/text-title-prefix/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/text-title-prefix/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/text-title-prefix/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/text-title-prefix/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "title-url",
+                "summary": "Reconstruct titles by decoding each URL's fixed Wikipedia article-path prefix.",
+                "target_columns": [
+                  "title"
+                ],
+                "reference_columns": [
+                  "url"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT \"__virtual_row_id\", \"id\", \"url\", \"text\" FROM source",
+                "reconstruction_sql": "SELECT \"__virtual_row_id\", \"id\", \"url\", url_decode(substr(\"url\", length('https://zh-classical.wikipedia.org/wiki/') + 1)) AS \"title\", \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "title-url",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 780831,
+                      "compressed_bytes": 768641,
+                      "savings_bytes": 12190,
+                      "savings_ratio": 0.015611572798723411
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.05670754215680063,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "title-url",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 10000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 7909472,
+                      "compressed_bytes": 7786867,
+                      "savings_bytes": 122605,
+                      "savings_ratio": 0.015501034708764377
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.2459405839908868,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "title-url",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 12708,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 9957397,
+                      "compressed_bytes": 9803126,
+                      "savings_bytes": 154271,
+                      "savings_ratio": 0.015493105276409085
+                    },
+                    "gzip": {
+                      "base_bytes": 6670779,
+                      "compressed_bytes": 6561247,
+                      "savings_bytes": 109532,
+                      "savings_ratio": 0.016419671525619423
+                    },
+                    "brotli": {
+                      "base_bytes": 5923076,
+                      "compressed_bytes": 5820977,
+                      "savings_bytes": 102099,
+                      "savings_ratio": 0.017237496192856548
+                    },
+                    "lz4": {
+                      "base_bytes": 10311949,
+                      "compressed_bytes": 10154603,
+                      "savings_bytes": 157346,
+                      "savings_ratio": 0.015258609211507932
+                    },
+                    "zstd": {
+                      "base_bytes": 8059460,
+                      "compressed_bytes": 7939486,
+                      "savings_bytes": 119974,
+                      "savings_ratio": 0.014886108994895439
+                    }
+                  },
+                  "reconstruction_latency_ms": 29.4051251,
+                  "counterexamples": [],
+                  "elapsed_seconds": 5.128239832818508,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/title-url/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/title-url/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/title-url/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/title-url/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/agent_tool_loop/title-url/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": true
+            }
+          ],
+          "selected_candidate_id": "title-url",
+          "model": "gpt-5.6-terra",
+          "usage": [
+            {
+              "response_id": "resp_090afe900047facc016a838e2b2c2487d28848517e34f58ebb",
+              "input_tokens": 10458,
+              "output_tokens": 157,
+              "total_tokens": 10615,
+              "elapsed_seconds": 3.2078057918697596
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e2e4f7087d29acef75363f3b5ba",
+              "input_tokens": 12647,
+              "output_tokens": 164,
+              "total_tokens": 12811,
+              "elapsed_seconds": 2.955751249799505
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e314f2087d2b44f27df5a8269e0",
+              "input_tokens": 12976,
+              "output_tokens": 321,
+              "total_tokens": 13297,
+              "elapsed_seconds": 4.547592999879271
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e35fe6087d2bb0ba7bd6973d5f5",
+              "input_tokens": 13462,
+              "output_tokens": 450,
+              "total_tokens": 13912,
+              "elapsed_seconds": 6.470633709104732
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e3c8b0887d2851575bb408297b2",
+              "input_tokens": 14084,
+              "output_tokens": 295,
+              "total_tokens": 14379,
+              "elapsed_seconds": 3.8481982920784503
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e40758487d28a511d585778116b",
+              "input_tokens": 14548,
+              "output_tokens": 235,
+              "total_tokens": 14783,
+              "elapsed_seconds": 3.9853163750376552
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e447b5487d2920a7b8bdc59b213",
+              "input_tokens": 14871,
+              "output_tokens": 237,
+              "total_tokens": 15108,
+              "elapsed_seconds": 3.3526721668895334
+            },
+            {
+              "response_id": "resp_090afe900047facc016a838e47e82887d2b9728b22b6da466d",
+              "input_tokens": 15288,
+              "output_tokens": 730,
+              "total_tokens": 16018,
+              "elapsed_seconds": 5.607433957979083
+            }
+          ],
+          "calls": 8,
+          "tool_calls": 8,
+          "agent_elapsed_seconds": 34.45851174998097,
+          "lineage": {
+            "url-title": {
+              "stage": "tool_loop"
+            },
+            "url-text-title": {
+              "stage": "tool_loop"
+            },
+            "text-title-prefix": {
+              "stage": "tool_loop"
+            },
+            "title-url": {
+              "stage": "tool_loop"
+            }
+          }
+        }
+      ],
+      "rows": 12708,
+      "columns": [
+        "id",
+        "url",
+        "title",
+        "text"
+      ],
+      "string_columns": [
+        "id",
+        "url",
+        "title",
+        "text"
+      ],
+      "original": {
+        "codec_sizes": {
+          "snappy": 9957397,
+          "gzip": 6670779,
+          "brotli": 5923076,
+          "lz4": 10311949,
+          "zstd": 8059460
+        },
+        "artifact_paths": {
+          "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/original/original-snappy.parquet",
+          "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/original/original-gzip.parquet",
+          "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/original/original-brotli.parquet",
+          "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/original/original-lz4.parquet",
+          "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.zh-classical/original/original-zstd.parquet"
+        }
+      }
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.ab",
+      "resolution_status": "bootstrapped",
+      "status": "available",
+      "reason": null,
+      "groups": [
+        {
+          "name": "manual",
+          "strategy": "manual",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "manual_wiki_1",
+                "summary": "Drop URL and reconstruct it from the language prefix and encoded title.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT * EXCLUDE (\"url\") FROM source",
+                "reconstruction_sql": "SELECT *, 'https://ab.wikipedia.org/wiki/' || url_encode(\"title\") AS \"url\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_1",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 217913,
+                      "compressed_bytes": 203685,
+                      "savings_bytes": 14228,
+                      "savings_ratio": 0.06529211198964724
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.04805729095824063,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_1",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 1 cell(s)",
+                  "rows": 5152,
+                  "mismatch_count": 1,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 5905,
+                      "column": "url",
+                      "expected": "'https://ab.wikipedia.org/wiki/%D0%90%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B8%D0%B0%3A%D0%90%D1%84%D0%BE%D1%80%D1%83%D0%BC/%D0%90%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0%D1%82%D3%99%20%D0%BB%D0%B0%D1%85%D3%99%D1%8B%D0%BB%D0%B0%D1%86%D3%99%D0%B0'",
+                      "actual": "'https://ab.wikipedia.org/wiki/%D0%90%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B8%D0%B0%3A%D0%90%D1%84%D0%BE%D1%80%D1%83%D0%BC%2F%D0%90%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0%D1%82%D3%99%20%D0%BB%D0%B0%D1%85%D3%99%D1%8B%D0%BB%D0%B0%D1%86%D3%99%D0%B0'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.0882524170447141,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "manual_wiki_2",
+                "summary": "Concatenate title and text and retain the title length.",
+                "target_columns": [
+                  "title",
+                  "text"
+                ],
+                "reference_columns": [],
+                "residual_columns": [
+                  {
+                    "name": "__v_wiki_title_text",
+                    "purpose": "Concatenated title and text"
+                  },
+                  {
+                    "name": "__v_wiki_title_len",
+                    "purpose": "Title length"
+                  }
+                ],
+                "compression_sql": "SELECT * EXCLUDE (\"title\", \"text\"), \"title\" || \"text\" AS \"__v_wiki_title_text\", length(\"title\") AS \"__v_wiki_title_len\" FROM source",
+                "reconstruction_sql": "SELECT * EXCLUDE (\"__v_wiki_title_text\", \"__v_wiki_title_len\"), substr(\"__v_wiki_title_text\", 1, \"__v_wiki_title_len\") AS \"title\", substr(\"__v_wiki_title_text\", \"__v_wiki_title_len\" + 1) AS \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_2",
+                  "split": "discovery",
+                  "valid": false,
+                  "status": "rejected",
+                  "reason": "candidate does not reduce Snappy Parquet size",
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 217913,
+                      "compressed_bytes": 229302,
+                      "savings_bytes": -11389,
+                      "savings_ratio": -0.052263976908215666
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.053235790925100446,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "manual_wiki_3",
+                "summary": "Combine title/text and reconstruct URL from the reconstructed title.",
+                "target_columns": [
+                  "url",
+                  "title",
+                  "text"
+                ],
+                "reference_columns": [],
+                "residual_columns": [
+                  {
+                    "name": "__v_wiki_title_text",
+                    "purpose": "Concatenated title and text"
+                  },
+                  {
+                    "name": "__v_wiki_title_len",
+                    "purpose": "Title length"
+                  }
+                ],
+                "compression_sql": "SELECT * EXCLUDE (\"url\", \"title\", \"text\"), \"title\" || \"text\" AS \"__v_wiki_title_text\", length(\"title\") AS \"__v_wiki_title_len\" FROM source",
+                "reconstruction_sql": "SELECT * EXCLUDE (\"__v_wiki_title_text\", \"__v_wiki_title_len\"), substr(\"__v_wiki_title_text\", 1, \"__v_wiki_title_len\") AS \"title\", substr(\"__v_wiki_title_text\", \"__v_wiki_title_len\" + 1) AS \"text\", 'https://ab.wikipedia.org/wiki/' || url_encode(substr(\"__v_wiki_title_text\", 1, \"__v_wiki_title_len\")) AS \"url\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_3",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 217913,
+                      "compressed_bytes": 214478,
+                      "savings_bytes": 3435,
+                      "savings_ratio": 0.015763171540936063
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.04889254202134907,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_3",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 1 cell(s)",
+                  "rows": 5152,
+                  "mismatch_count": 1,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "__v_wiki_title_text",
+                    "__v_wiki_title_len"
+                  ],
+                  "auxiliary_columns": 2,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 5905,
+                      "column": "url",
+                      "expected": "'https://ab.wikipedia.org/wiki/%D0%90%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B8%D0%B0%3A%D0%90%D1%84%D0%BE%D1%80%D1%83%D0%BC/%D0%90%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0%D1%82%D3%99%20%D0%BB%D0%B0%D1%85%D3%99%D1%8B%D0%BB%D0%B0%D1%86%D3%99%D0%B0'",
+                      "actual": "'https://ab.wikipedia.org/wiki/%D0%90%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B8%D0%B0%3A%D0%90%D1%84%D0%BE%D1%80%D1%83%D0%BC%2F%D0%90%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0%D1%82%D3%99%20%D0%BB%D0%B0%D1%85%D3%99%D1%8B%D0%BB%D0%B0%D1%86%D3%99%D0%B0'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.0800549159757793,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            },
+            {
+              "candidate": {
+                "id": "manual_wiki_4",
+                "summary": "Drop title and decode it from the URL.",
+                "target_columns": [
+                  "title"
+                ],
+                "reference_columns": [
+                  "url"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT * EXCLUDE (\"title\") FROM source",
+                "reconstruction_sql": "SELECT *, url_decode(CASE WHEN starts_with(\"url\", 'https://ab.wikipedia.org/wiki/') THEN substr(\"url\", length('https://ab.wikipedia.org/wiki/') + 1) ELSE \"url\" END) AS \"title\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "manual_wiki_4",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 217913,
+                      "compressed_bytes": 207855,
+                      "savings_bytes": 10058,
+                      "savings_ratio": 0.0461560347478122
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.04933837498538196,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_4",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 5152,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 1017193,
+                      "compressed_bytes": 968593,
+                      "savings_bytes": 48600,
+                      "savings_ratio": 0.047778543501577384
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.11087491689249873,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "manual_wiki_4",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 6152,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "url",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 1243983,
+                      "compressed_bytes": 1186095,
+                      "savings_bytes": 57888,
+                      "savings_ratio": 0.04653439797810742
+                    },
+                    "gzip": {
+                      "base_bytes": 717731,
+                      "compressed_bytes": 677588,
+                      "savings_bytes": 40143,
+                      "savings_ratio": 0.05593042518715229
+                    },
+                    "brotli": {
+                      "base_bytes": 598249,
+                      "compressed_bytes": 567559,
+                      "savings_bytes": 30690,
+                      "savings_ratio": 0.05129970965266971
+                    },
+                    "lz4": {
+                      "base_bytes": 1193443,
+                      "compressed_bytes": 1136398,
+                      "savings_bytes": 57045,
+                      "savings_ratio": 0.04779867995371375
+                    },
+                    "zstd": {
+                      "base_bytes": 794286,
+                      "compressed_bytes": 755821,
+                      "savings_bytes": 38465,
+                      "savings_ratio": 0.048427140853546456
+                    }
+                  },
+                  "reconstruction_latency_ms": 12.397699999999999,
+                  "counterexamples": [],
+                  "elapsed_seconds": 1.3722992909606546,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/manual/manual_wiki_4/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/manual/manual_wiki_4/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/manual/manual_wiki_4/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/manual/manual_wiki_4/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/manual/manual_wiki_4/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": true
+            }
+          ],
+          "selected_candidate_id": "manual_wiki_4"
+        },
+        {
+          "name": "heuristic",
+          "strategy": "heuristic",
+          "status": "skipped",
+          "candidates": [],
+          "reason": "no candidates were produced"
+        },
+        {
+          "name": "agent",
+          "strategy": "single",
+          "status": "error",
+          "candidates": [],
+          "reason": "ValidationError: 5 validation errors for CandidateBatch\ncandidates.0\n  Value error, __virtual_row_id is reserved [type=value_error, input_value={'id': 'url_from_title', ...\"text\" FROM compressed'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error\ncandidates.1\n  Value error, __virtual_row_id is reserved [type=value_error, input_value={'id': 'title_from_url', ...\"text\" FROM compressed'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error\ncandidates.2\n  Value error, __virtual_row_id is reserved [type=value_error, input_value={'id': 'url_prefix', 'sum...\"text\" FROM compressed'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error\ncandidates.3\n  Value error, __virtual_row_id is reserved [type=value_error, input_value={'id': 'text_after_title'...\"text\" FROM compressed'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error\ncandidates.4\n  Value error, __virtual_row_id is reserved [type=value_error, input_value={'id': 'url_and_text_from...\"text\" FROM compressed'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error",
+          "model": "gpt-5.6-terra",
+          "usage": [],
+          "calls": 1,
+          "tool_calls": 0,
+          "agent_elapsed_seconds": 42.96467133401893,
+          "lineage": {}
+        },
+        {
+          "name": "agent",
+          "strategy": "two_stage",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "url_from_title",
+                "summary": "Reconstruct URL from the title using DuckDB URL encoding, with a residual fallback for any row whose URL does not exactly follow the observed wiki-title form.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [
+                  {
+                    "name": "url_e",
+                    "purpose": "Original URL only when deterministic title-based reconstruction differs; NULL otherwise."
+                  }
+                ],
+                "compression_sql": "SELECT \"__virtual_row_id\", \"id\", \"title\", \"text\", CASE WHEN \"url\" = 'https://ab.wikipedia.org/wiki/' || url_encode(\"title\") THEN NULL ELSE \"url\" END AS \"url_e\" FROM source",
+                "reconstruction_sql": "SELECT \"__virtual_row_id\", \"id\", COALESCE(\"url_e\", 'https://ab.wikipedia.org/wiki/' || url_encode(\"title\")) AS \"url\", \"title\", \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "url_e"
+                  ],
+                  "auxiliary_columns": 1,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 217913,
+                      "compressed_bytes": 205110,
+                      "savings_bytes": 12803,
+                      "savings_ratio": 0.05875280501851656
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.051541666965931654,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "holdout",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 5152,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "url_e"
+                  ],
+                  "auxiliary_columns": 1,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 1017193,
+                      "compressed_bytes": 953938,
+                      "savings_bytes": 63255,
+                      "savings_ratio": 0.06218583887226908
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.11746041616424918,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "full",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 6152,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text",
+                    "url_e"
+                  ],
+                  "auxiliary_columns": 1,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 1243983,
+                      "compressed_bytes": 1168322,
+                      "savings_bytes": 75661,
+                      "savings_ratio": 0.06082157071278305
+                    },
+                    "gzip": {
+                      "base_bytes": 717731,
+                      "compressed_bytes": 674040,
+                      "savings_bytes": 43691,
+                      "savings_ratio": 0.060873781402781824
+                    },
+                    "brotli": {
+                      "base_bytes": 598249,
+                      "compressed_bytes": 563172,
+                      "savings_bytes": 35077,
+                      "savings_ratio": 0.05863277665319959
+                    },
+                    "lz4": {
+                      "base_bytes": 1193443,
+                      "compressed_bytes": 1109474,
+                      "savings_bytes": 83969,
+                      "savings_ratio": 0.07035861788120588
+                    },
+                    "zstd": {
+                      "base_bytes": 794286,
+                      "compressed_bytes": 748433,
+                      "savings_bytes": 45853,
+                      "savings_ratio": 0.05772857635662721
+                    }
+                  },
+                  "reconstruction_latency_ms": 10.8343332,
+                  "counterexamples": [],
+                  "elapsed_seconds": 1.3140132918488234,
+                  "artifact_paths": {
+                    "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/agent_two_stage/url_from_title/full/compressed-snappy.parquet",
+                    "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/agent_two_stage/url_from_title/full/compressed-gzip.parquet",
+                    "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/agent_two_stage/url_from_title/full/compressed-brotli.parquet",
+                    "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/agent_two_stage/url_from_title/full/compressed-lz4.parquet",
+                    "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/agent_two_stage/url_from_title/full/compressed-zstd.parquet"
+                  }
+                }
+              ],
+              "selected": true
+            }
+          ],
+          "selected_candidate_id": "url_from_title",
+          "model": "gpt-5.6-terra",
+          "usage": [
+            {
+              "response_id": "resp_08d1125816a62be9016a838e86ded887d2baea5610bde502ba",
+              "input_tokens": 7052,
+              "output_tokens": 622,
+              "total_tokens": 7674,
+              "elapsed_seconds": 5.735286458162591
+            },
+            {
+              "response_id": "resp_04db67c5af3b03c7016a838e8cd95c819f8d6531757f465195",
+              "input_tokens": 8443,
+              "output_tokens": 434,
+              "total_tokens": 8877,
+              "elapsed_seconds": 5.119129624916241
+            }
+          ],
+          "calls": 2,
+          "tool_calls": 0,
+          "agent_elapsed_seconds": 11.0665605829563,
+          "lineage": {
+            "url_from_title": {
+              "stage": "repair",
+              "initial_candidate_ids": [
+                "url_from_title",
+                "url_from_title_pct20",
+                "url_suffix_from_title"
+              ]
+            }
+          }
+        },
+        {
+          "name": "agent",
+          "strategy": "tool_loop",
+          "status": "completed",
+          "candidates": [
+            {
+              "candidate": {
+                "id": "url_from_title",
+                "summary": "Reconstruct every URL from the retained title via DuckDB percent encoding and the shared wiki prefix.",
+                "target_columns": [
+                  "url"
+                ],
+                "reference_columns": [
+                  "title"
+                ],
+                "residual_columns": [],
+                "compression_sql": "SELECT \"__virtual_row_id\", \"id\", \"title\", \"text\" FROM source",
+                "reconstruction_sql": "SELECT \"__virtual_row_id\", \"id\", 'https://ab.wikipedia.org/wiki/' || url_encode(\"title\") AS \"url\", \"title\", \"text\" FROM compressed"
+              },
+              "evaluations": [
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "discovery",
+                  "valid": true,
+                  "status": "valid",
+                  "reason": null,
+                  "rows": 1000,
+                  "mismatch_count": 0,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {
+                    "snappy": {
+                      "base_bytes": 217913,
+                      "compressed_bytes": 203946,
+                      "savings_bytes": 13967,
+                      "savings_ratio": 0.064094386291777
+                    }
+                  },
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [],
+                  "elapsed_seconds": 0.049852958181872964,
+                  "artifact_paths": {}
+                },
+                {
+                  "candidate_id": "url_from_title",
+                  "split": "holdout",
+                  "valid": false,
+                  "status": "invalid",
+                  "reason": "reconstruction differs in 1 cell(s)",
+                  "rows": 5152,
+                  "mismatch_count": 1,
+                  "output_columns": [
+                    "__virtual_row_id",
+                    "id",
+                    "title",
+                    "text"
+                  ],
+                  "auxiliary_columns": 0,
+                  "codec_sizes": {},
+                  "reconstruction_latency_ms": null,
+                  "counterexamples": [
+                    {
+                      "row_id": 5905,
+                      "column": "url",
+                      "expected": "'https://ab.wikipedia.org/wiki/%D0%90%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B8%D0%B0%3A%D0%90%D1%84%D0%BE%D1%80%D1%83%D0%BC/%D0%90%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0%D1%82%D3%99%20%D0%BB%D0%B0%D1%85%D3%99%D1%8B%D0%BB%D0%B0%D1%86%D3%99%D0%B0'",
+                      "actual": "'https://ab.wikipedia.org/wiki/%D0%90%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B8%D0%B0%3A%D0%90%D1%84%D0%BE%D1%80%D1%83%D0%BC%2F%D0%90%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0%D1%82%D3%99%20%D0%BB%D0%B0%D1%85%D3%99%D1%8B%D0%BB%D0%B0%D1%86%D3%99%D0%B0'"
+                    }
+                  ],
+                  "elapsed_seconds": 0.07516937516629696,
+                  "artifact_paths": {}
+                }
+              ],
+              "selected": false
+            }
+          ],
+          "reason": "no candidate passed lossless, size-positive full validation",
+          "model": "gpt-5.6-terra",
+          "usage": [
+            {
+              "response_id": "resp_0ba0d5ef6db6213e016a838e93817487d2af91d71380161bfb",
+              "input_tokens": 7430,
+              "output_tokens": 142,
+              "total_tokens": 7572,
+              "elapsed_seconds": 2.5924267910886556
+            },
+            {
+              "response_id": "resp_0ba0d5ef6db6213e016a838e96244487d2b745e4ebac0f98ed",
+              "input_tokens": 7676,
+              "output_tokens": 98,
+              "total_tokens": 7774,
+              "elapsed_seconds": 1.8795995411928743
+            },
+            {
+              "response_id": "resp_0ba0d5ef6db6213e016a838e982a1087d286bdb5f83e323d02",
+              "input_tokens": 7849,
+              "output_tokens": 371,
+              "total_tokens": 8220,
+              "elapsed_seconds": 5.71885725017637
+            },
+            {
+              "response_id": "resp_0ba0d5ef6db6213e016a838e9dd93c87d2b0d97fca8973786f",
+              "input_tokens": 8385,
+              "output_tokens": 167,
+              "total_tokens": 8552,
+              "elapsed_seconds": 3.1002655839547515
+            },
+            {
+              "response_id": "resp_0ba0d5ef6db6213e016a838ea1036087d2812bf99c86dd79a9",
+              "input_tokens": 8616,
+              "output_tokens": 864,
+              "total_tokens": 9480,
+              "elapsed_seconds": 11.15332291694358
+            },
+            {
+              "response_id": "resp_0ba0d5ef6db6213e016a838eac7ed087d2a41a8a5f76cd2057",
+              "input_tokens": 9650,
+              "output_tokens": 293,
+              "total_tokens": 9943,
+              "elapsed_seconds": 4.017467292025685
+            }
+          ],
+          "calls": 6,
+          "tool_calls": 6,
+          "agent_elapsed_seconds": 28.764549707993865,
+          "lineage": {
+            "url_from_title": {
+              "stage": "tool_loop"
+            }
+          }
+        }
+      ],
+      "rows": 6152,
+      "columns": [
+        "id",
+        "url",
+        "title",
+        "text"
+      ],
+      "string_columns": [
+        "id",
+        "url",
+        "title",
+        "text"
+      ],
+      "original": {
+        "codec_sizes": {
+          "snappy": 1243983,
+          "gzip": 717731,
+          "brotli": 598249,
+          "lz4": 1193443,
+          "zstd": 794286
+        },
+        "artifact_paths": {
+          "snappy": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/original/original-snappy.parquet",
+          "gzip": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/original/original-gzip.parquet",
+          "brotli": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/original/original-brotli.parquet",
+          "lz4": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/original/original-lz4.parquet",
+          "zstd": "/Users/agij47es/Documents/UTN_Research/virtual-agentic-strings/string_compression/results/agentic-wiki-20260818/artifacts/wikimedia_wikipedia__20231101.ab/original/original-zstd.parquet"
+        }
+      }
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.af",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.azb",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.bg",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.ady",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.ar",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.de",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.ceb",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    },
+    {
+      "dataset_id": "wikimedia/wikipedia",
+      "config_name": "20231101.nl",
+      "resolution_status": "skipped",
+      "status": "skipped",
+      "reason": "dataset is not local and is outside the capped bootstrap allowlist",
+      "groups": []
+    }
+  ]
+}
