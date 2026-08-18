@@ -4,3 +4,8 @@ commitizen
 matplotlib
 hf_xet
 rdkit
+openai>=2.6
+pydantic>=2.12
+python-dotenv>=1.0
+sqlglot>=25.24
+pytest>=8
